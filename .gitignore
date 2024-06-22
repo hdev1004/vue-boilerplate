@@ -25,3 +25,5 @@ coverage
 # Playwright directories
 test-results/
 playwright-report/
+
+*storybook.log
