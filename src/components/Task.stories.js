@@ -1,5 +1,3 @@
-import { fn } from '@storybook/test'
-
 import Task from './Task.vue'
 
 export const ActionsData = {

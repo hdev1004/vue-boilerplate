@@ -1,9 +1,14 @@
 <script setup lang="ts">
-const Test = () => {}
+import AxiosInstance from '../axios/axiosInstance'
+
+const Test = async () => {
+  let data = await AxiosInstance('/products/1')
+  console.log(data)
+}
 </script>
 
 <template>
-  <button :class="$style.button">
+  <button :class="$style.button" @click="Test">
     <slot>Submit</slot>
   </button>
 </template>
