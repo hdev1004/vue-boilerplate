@@ -1,3 +1,7 @@
+<script setup lang="ts">
+const Test = () => {}
+</script>
+
 <template>
   <button :class="$style.button">
     <slot>Submit</slot>

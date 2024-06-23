@@ -3,8 +3,12 @@ import { fn } from '@storybook/test'
 import Task from './Task.vue'
 
 export const ActionsData = {
-  onPinTask: fn(),
-  onArchiveTask: fn()
+  onPinTask: () => {
+    alert('test')
+  },
+  onDisableTask: () => {
+    console.log('test')
+  }
 }
 
 export default {
@@ -37,11 +41,11 @@ export const Pinned = {
   }
 }
 
-export const Archived = {
+export const Disabled = {
   args: {
     task: {
       ...Default.args.task,
-      state: 'TASK_ARCHIVED'
+      state: 'TASK_DISABLED'
     }
   }
 }
