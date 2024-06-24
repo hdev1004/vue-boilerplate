@@ -4,9 +4,10 @@ import { createHead } from '@unhead/vue'
 
 import App from '@/App.vue'
 import router from '@/router/index'
+import Antd from 'ant-design-vue'
 
 const app = createApp(App)
-
+app.use(Antd) // Ant Design Vue 사용 설정
 /** Pinia **/
 /** https://pinia.vuejs.org/ **/
 const pinia = createPinia()

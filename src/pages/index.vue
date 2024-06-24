@@ -2,35 +2,29 @@
 import BaseInputText from '@/components/BaseInputText.vue'
 import BaseButton from '@/components/BaseButton.vue'
 import { useCounterStore } from '@/stores/counter'
-
-useHead({
-  title: 'Home - Vue Enterprise Boilerplate',
-  meta: [
-    {
-      name: 'description',
-      content: 'Welcome to the Vue Enterprise Boilerplate!'
-    }
-  ]
-})
 </script>
 
 <template>
-  <AppLayout>
-    <h1>Home Page</h1>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-    <BaseInputText />
-    <BaseButton />
-    <button
-      @click="
-        () => {
-          useCounterStore().increment()
-        }
-      "
-    >
-      증가
-    </button>
-    <div>Number : {{ useCounterStore().count }}</div>
-  </AppLayout>
+  <section class="banner">
+    <a-carousel :after-change="onChange">
+      <div>
+        <img src="@/assets/images/main/banner1.jpg" alt="배너" />
+      </div>
+      <div>
+        <img src="@/assets/images/main/banner2.jpg" alt="배너" />
+      </div>
+      <div>
+        <img src="@/assets/images/main/banner3.jpg" alt="배너" />
+      </div>
+    </a-carousel>
+  </section>
+  <div class="blank"></div>
+  <div class="blank"></div>
+  <div class="blank"></div>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+/* For demo */
+
+@import url('./index.scss');
+</style>
