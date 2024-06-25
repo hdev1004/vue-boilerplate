@@ -1,6 +1,7 @@
 import LoginRouter from './login/loginRouter.js'
+import { vueRouter } from 'storybook-vue3-router'
 
-export default [
+const CustomRouter = [
   {
     path: '/',
     name: 'home',
@@ -8,3 +9,5 @@ export default [
   },
   ...LoginRouter
 ]
+
+export default CustomRouter

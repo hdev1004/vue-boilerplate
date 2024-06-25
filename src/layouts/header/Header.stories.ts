@@ -1,4 +1,4 @@
-import Header from './Header.vue'
+import Header from './HeaderDemo.vue'
 
 export default {
   component: Header,
