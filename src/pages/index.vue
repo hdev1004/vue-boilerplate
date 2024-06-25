@@ -1,12 +1,8 @@
-<script setup lang="ts">
-import BaseInputText from '@/components/BaseInputText.vue'
-import BaseButton from '@/components/BaseButton.vue'
-import { useCounterStore } from '@/stores/counter'
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <section class="banner">
-    <a-carousel :after-change="onChange">
+    <a-carousel>
       <div>
         <img src="@/assets/images/main/banner1.jpg" alt="배너" />
       </div>

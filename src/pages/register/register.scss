@@ -1,0 +1,105 @@
+.register {
+  width: 1000px;
+  display: flex;
+  flex-direction: column;
+
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+
+  .table_scription {
+    top: 120px;
+    right: 0px;
+    position: absolute;
+    color: #555654;
+    span {
+      color: #068ecd;
+    }
+  }
+
+  .title {
+    margin-bottom: 50px;
+    text-align: center;
+    height: 55px;
+    line-height: 55px;
+    font-size: 30px;
+    font-family: 'HSSanTokki20-Regular';
+    color: #5c5b5a;
+    margin-top: 40px;
+  }
+}
+
+.register_table {
+  .register_row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 65px;
+    color: #555654;
+    border-bottom: 1px solid lightgray;
+
+    span {
+      color: #068ecd;
+    }
+
+    .register_input {
+      width: 300px;
+    }
+    input {
+      box-sizing: border-box;
+      height: 45px;
+      padding-left: 10px;
+      outline: none;
+      border: 1px solid lightgray;
+      margin-left: 20px;
+      width: 100%;
+    }
+
+    .register_sub {
+      margin-left: 70px;
+    }
+  }
+
+  .register_row div:nth-child(1) {
+    background-color: #eae5dd;
+    width: 150px;
+    line-height: 65px;
+    text-align: left;
+    padding-left: 20px;
+    box-sizing: border-box;
+  }
+}
+
+.register_btn {
+  cursor: pointer;
+  width: 200px;
+  text-align: center;
+  height: 45px;
+  line-height: 45px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 50px;
+  color: white;
+  background-color: #655345;
+}
+@media screen and (min-width: 1024px) {
+  /* Desktop */
+}
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+  /* Tablet */
+  .register {
+    width: 480px;
+  }
+  .register_sub {
+    display: none;
+  }
+}
+@media screen and (max-width: 767px) {
+  /* Tablet */
+  .register {
+    width: 480px;
+  }
+  .register_sub {
+    display: none;
+  }
+}
