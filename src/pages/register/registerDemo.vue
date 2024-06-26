@@ -24,63 +24,8 @@ const warning = () => {
   message.warning('This is a warning message')
 }
 
-const registerCheck = () => {
-  isModal.value = true
-  if (loginId.value.trim() === '') {
-    errorType.value = '아이디'
-    type.value = '오류'
-    title.value = '아이디를 입력해주세요.'
-    sub.value = ''
-    return
-  }
-
-  if (password.value.trim() === '') {
-    errorType.value = '비밀번호'
-    type.value = '오류'
-    title.value = '비빌번호를 입력해주세요.'
-    sub.value = ''
-    return
-  }
-
-  if (password.value !== rePassword.value) {
-    errorType.value = '비밀번호확인'
-    type.value = '오류'
-    title.value = '비밀번호가 같지 않습니다.'
-    sub.value = ''
-    return
-  }
-
-  if (memberName.value.trim() === '') {
-    errorType.value = '사용자이름'
-    type.value = '오류'
-    title.value = '사용자 이름을 입력해주세요.'
-    sub.value = ''
-    return
-  }
-  errorType.value = 'none'
-
-  type.value = '회원가입'
-  title.value = '회원가입을 진행하시겠습니까?'
-  sub.value = '회원정보는 가입 후 변경할 수 있습니다.'
-}
-
 //회원가입 함수
-const register = async () => {
-  let data = null
-  try {
-    data = await axiosInstance.post('/api/user-service/members', {
-      loginId: loginId.value,
-      password: password.value,
-      memberName: memberName.value
-    })
-
-    success()
-    router.push('/login')
-  } catch (err) {
-    error()
-  }
-  isModal.value = false
-}
+const register = async () => {}
 
 const close = () => {
   isModal.value = false
@@ -146,7 +91,7 @@ const close = () => {
       </div>
     </div>
 
-    <div class="register_btn" @click="registerCheck">회원가입</div>
+    <div class="register_btn">회원가입</div>
   </section>
 
   <section>

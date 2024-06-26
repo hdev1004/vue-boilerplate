@@ -1,4 +1,6 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import HomeItems from '@/components/Home/HomeItems.vue'
+</script>
 
 <template>
   <section class="banner">
@@ -14,7 +16,7 @@
       </div>
     </a-carousel>
   </section>
-  <div class="blank"></div>
+  <HomeItems />
   <div class="blank"></div>
   <div class="blank"></div>
 </template>
