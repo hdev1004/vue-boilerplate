@@ -1,9 +1,16 @@
 .header_blank {
-  height: 90px;
+}
+
+.header_istop_true {
+  .header {
+    background-color: transparent;
+    box-shadow: 0px 0px 2px lightgray;
+  }
 }
 
 .header {
-  z-index: 200;
+  transition: 0.3s;
+  z-index: 20;
   position: relative;
   top: 0px;
   width: 100%;

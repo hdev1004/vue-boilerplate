@@ -15,39 +15,23 @@ const props = defineProps({
   /**Modal 닫기 엑션 */
   close: Function
 })
-
-const handleClickOutside = (event: MouseEvent) => {
-  if (props.isModal && modalRef.value && !modalRef.value.contains(event.target as Node)) {
-    //alert('test')
-    //props.close()
-  }
-}
-
-onMounted(() => {
-  document.addEventListener('click', handleClickOutside)
-})
-
-onBeforeUnmount(() => {
-  document.removeEventListener('click', handleClickOutside)
-})
 </script>
 
 <template>
   <section>
-    <div :class="`modal_background modal_background_${isModal}`">
-      <div class="modal" ref="modalRef">
-        <div class="modal_header">{{ props.type === '오류' ? '확인해주세요 🫢' : '' }}</div>
+    <div :class="`modal_background modal_background_${isModal}`" @click="props.close"></div>
+    <div :class="`modal modal_${isModal}`" ref="modalRef">
+      <div class="modal_header">{{ props.type === '오류' ? '확인해주세요 🫢' : '회원가입' }}</div>
 
-        <div class="modal_body">
-          <div class="modal_title">{{ props.title }}</div>
-          <div class="modal_sub">{{ props.sub }}</div>
-          <div class="modal_close" @click="props.close">
-            <img src="@/assets/images/header/close.png" />
-          </div>
+      <div class="modal_body">
+        <div class="modal_title">{{ props.title }}</div>
+        <div class="modal_sub">{{ props.sub }}</div>
+        <div class="modal_close" @click="props.close">
+          <img src="@/assets/images/header/close.png" />
         </div>
-
-        <div class="modal_btn" @click="props.action">확인</div>
       </div>
+
+      <div class="modal_btn" @click="props.action">확인</div>
     </div>
   </section>
 </template>

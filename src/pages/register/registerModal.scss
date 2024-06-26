@@ -32,8 +32,17 @@
   opacity: 0;
 }
 
+.modal_false {
+  z-index: -1;
+  opacity: 0;
+  visibility: hidden;
+}
+
 .modal {
-  position: relative;
+  left: calc(50% - 250px);
+  top: calc(50% - 150px);
+  z-index: 550;
+  position: absolute;
   border-radius: 5px;
   box-shadow: 0px 0px 5px white;
   transition: 0.3s;

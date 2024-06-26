@@ -53,6 +53,10 @@
       border: 1px solid lightgray;
       margin-left: 20px;
       width: 100%;
+      transition: 0.2s;
+    }
+    .input_error {
+      border: 1px solid rgb(250, 145, 138);
     }
 
     .register_sub {

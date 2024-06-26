@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import AxiosInstance from '@/axios/axiosInstance'
 import axios from 'axios'
+import { success, error, warning } from '@/utils/vueAlert'
 
 const id = ref('')
 const pw = ref('')
@@ -8,11 +9,19 @@ const pw = ref('')
 const router = useRouter()
 
 const login = async () => {
-  let data = await axios.post('/api/user-service/login', {
-    loginId: id.value,
-    password: pw.value
-  })
-  console.log(data.headers.token)
+  let data = null
+  try {
+    data = await axios.post('/api/user-service/login', {
+      loginId: id.value,
+      password: pw.value
+    })
+    success('🟨🟨🟨님 안녕하세요. 🤗')
+    console.log(data.headers.token)
+    router.push('/')
+  } catch (err) {
+    error('오류가 발생했습니다.')
+    console.log(data, err)
+  }
 }
 </script>
 
@@ -28,7 +37,7 @@ const login = async () => {
 
     <div class="input_container">
       <input placeholder="아이디" v-model="id" />
-      <input placeholder="비밀번호" v-model="pw" />
+      <input placeholder="비밀번호" v-model="pw" type="password" />
     </div>
 
     <div class="login_btn" @click="login">로그인</div>

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
+const scrollY = ref(window.scrollY)
+const isTop = ref(window.scrollY === 0 ? true : false)
 
 const router = useRouter()
 let isMobileMenuOpen = ref(false)
@@ -11,10 +13,26 @@ const moveHome = () => {
 const moveLogin = () => {
   router.push('/login')
 }
+
+const handleScroll = () => {
+  if (window.scrollY === 0) {
+    isTop.value = true
+  } else {
+    isTop.value = false
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', handleScroll)
+})
 </script>
 
 <template>
-  <section class="header_container">
+  <section :class="`header_container header_istop_${isTop}`">
     <section class="header_blank"></section>
 
     <section class="header">
