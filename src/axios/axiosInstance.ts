@@ -2,7 +2,7 @@
 import axios from 'axios'
 
 const AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL, // 기본 URL 설정
+  baseURL: '/', // 기본 URL 설정
   timeout: 10000, // 요청이 타임아웃되기까지의 시간 (ms)
   headers: {
     'Content-Type': 'application/json',
@@ -13,6 +13,10 @@ const AxiosInstance = axios.create({
 //요청 인터셉터
 AxiosInstance.interceptors.request.use(
   (config) => {
+    const token = localStorage.getItem('memberToken')
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`
+    }
     //요청 보내기 전에 수행 로직
     return config
   },
@@ -26,7 +30,7 @@ AxiosInstance.interceptors.request.use(
 AxiosInstance.interceptors.response.use(
   (response) => {
     //응답에 대한 로직
-    const res = response.data
+    const res = response
     return res
   },
   (err) => {

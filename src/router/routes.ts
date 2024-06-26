@@ -1,4 +1,5 @@
 import loginRouter from './login/loginRouter.js'
+import mypageRouter from './mypage/mypageRouter.js'
 import registerRouter from './register/registerRouter.js'
 import { vueRouter } from 'storybook-vue3-router'
 
@@ -9,7 +10,8 @@ const CustomRouter = [
     component: () => import('@/pages/index.vue')
   },
   ...loginRouter,
-  ...registerRouter
+  ...registerRouter,
+  ...mypageRouter
 ]
 
 export default CustomRouter

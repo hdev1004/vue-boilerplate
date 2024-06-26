@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
+import Cookies from 'js-cookie'
 import { ref } from 'vue'
+import { log } from 'console'
 const scrollY = ref(window.scrollY)
 const isTop = ref(window.scrollY === 0 ? true : false)
 
@@ -11,7 +13,12 @@ const moveHome = () => {
   router.push('/')
 }
 const moveLogin = () => {
-  router.push('/login')
+  let memberInfo = Cookies.get('member')
+  if (memberInfo) {
+    router.push('/mypage')
+  } else {
+    router.push('/login')
+  }
 }
 
 const handleScroll = () => {

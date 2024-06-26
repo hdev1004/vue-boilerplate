@@ -17,8 +17,11 @@ import HomeItems from '@/components/Home/HomeItems.vue'
     </a-carousel>
   </section>
   <HomeItems />
-  <div class="blank"></div>
-  <div class="blank"></div>
+  <div style="margin-top: 200px"></div>
+  <HomeItems />
+  <div style="margin-top: 200px"></div>
+  <HomeItems />
+  <div style="margin-top: 200px"></div>
 </template>
 
 <style lang="scss" scoped>

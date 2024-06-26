@@ -1,25 +1,58 @@
 <script setup lang="ts">
 import AxiosInstance from '@/axios/axiosInstance'
+import Cookies from 'js-cookie'
 import axios from 'axios'
 import { success, error, warning } from '@/utils/vueAlert'
+import { jwtDecode } from 'jwt-decode'
 
 const id = ref('')
 const pw = ref('')
 
 const router = useRouter()
+const cookieValue = ref('')
+const decodedToken = ref(null)
+
+const decodeToken = (token: string) => {
+  let decodeToken = null
+
+  try {
+    decodeToken = jwtDecode(token)
+    console.log(decodeToken)
+  } catch (error) {
+    decodeToken = 'Invalid Token'
+  }
+  return decodeToken
+}
 
 const login = async () => {
   let data = null
   try {
-    data = await axios.post('/api/user-service/login', {
+    data = await AxiosInstance.post('/api/user-service/login', {
       loginId: id.value,
       password: pw.value
     })
-    success('🟨🟨🟨님 안녕하세요. 🤗')
-    console.log(data.headers.token)
+    console.log('DATA : ', data)
+    const token = data.headers.token
+    localStorage.setItem('memberToken', token)
+    let memberSub = decodeToken(token).sub
+
+    let memberInfo = null
+
+    try {
+      memberInfo = await AxiosInstance.get(`/api/user-service/members/${memberSub}`)
+      success(`${memberInfo.data.memberName} 님 안녕하세요. 🤗`)
+    } catch (err) {
+      error('오류가 발생했습니다.')
+      console.log(err)
+    }
+
+    if (memberInfo === null) return
+
+    Cookies.set('member', JSON.stringify(memberInfo.data), { expires: 1 }) // 7일 동안 유효한 쿠키 설정
+
     router.push('/')
   } catch (err) {
-    error('오류가 발생했습니다.')
+    warning('아이디 비빌번호를 확인해주세요.')
     console.log(data, err)
   }
 }

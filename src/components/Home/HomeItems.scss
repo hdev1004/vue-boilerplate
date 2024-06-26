@@ -1,0 +1,67 @@
+.homeitems_container {
+}
+
+.homeitems_logo {
+  width: 100%;
+  height: 60px;
+  text-align: center;
+  line-height: 60px;
+  font-size: 30px;
+  margin-top: 70px;
+  margin-bottom: 30px;
+  font-family: 'HSSanTokki20-Regular';
+  color: #5c5b5a;
+}
+
+.homeitems_items {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+}
+
+.homeitems_card {
+  position: relative;
+
+  .homeitems_title {
+    margin-top: 15px;
+    overflow: hidden; // 을 사용해 영역을 감출 것
+    text-overflow: ellipsis; // 로 ... 을 만들기
+    white-space: nowrap; // 아래줄로 내려가는 것을 막기위해
+    word-break: break-all;
+    width: 20vw;
+    color: #1a1a1a;
+    font-size: 17px;
+  }
+
+  .homeitems_price {
+    font-weight: 500;
+    font-size: 19px;
+  }
+  .homeitems_review {
+    font-size: 14px;
+    color: #9a9a9a;
+  }
+  img {
+    transition: 0.3s;
+    width: 20vw;
+    cursor: pointer;
+  }
+
+  img:hover {
+    opacity: 0.6;
+  }
+
+  .homeitems_rank {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 50px;
+    height: 50px;
+    background-color: #e86434;
+    color: white;
+    font-size: 22px;
+    text-align: center;
+    line-height: 50px;
+  }
+}
