@@ -1,3 +1,4 @@
+import itemRouter from './item/itemRouter.js'
 import loginRouter from './login/loginRouter.js'
 import mypageRouter from './mypage/mypageRouter.js'
 import registerRouter from './register/registerRouter.js'
@@ -11,7 +12,8 @@ const CustomRouter = [
   },
   ...loginRouter,
   ...registerRouter,
-  ...mypageRouter
+  ...mypageRouter,
+  ...itemRouter
 ]
 
 export default CustomRouter

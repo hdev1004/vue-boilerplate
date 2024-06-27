@@ -1,0 +1,180 @@
+.item_container {
+  margin-top: 90px;
+}
+
+.item_divistion {
+  display: flex;
+}
+
+.item_description {
+  img {
+    width: calc(100% - 420px);
+  }
+}
+
+.item_payment {
+  right: 0px;
+  height: 100vh;
+  position: fixed;
+  background-color: white;
+  transition: 0.3s;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  padding-left: 15px;
+  padding-top: 50px;
+  margin-right: 30px;
+  min-width: 400px;
+
+  .item_title {
+    font-size: 20px;
+  }
+
+  .item_price {
+    font-size: 20px;
+    font-weight: bold;
+  }
+}
+
+.item_line {
+  width: 100%;
+  box-shadow: 0px 0px 1px lightgray;
+  height: 1px;
+  margin-top: 50px;
+  margin-bottom: 20px;
+}
+
+.quantity_container {
+  display: flex;
+
+  div {
+    text-align: center;
+    width: 33%;
+    height: 40px;
+    line-height: 40px;
+    cursor: pointer;
+  }
+
+  .quantity {
+  }
+
+  .minus {
+    background-color: lightgray;
+    color: black;
+  }
+
+  .plus {
+    background-color: #828282;
+    color: white;
+  }
+}
+
+.item_icons {
+  width: 100%;
+  position: absolute;
+  bottom: 105px;
+  display: flex;
+  margin-top: 50px;
+  gap: 10px;
+  img {
+    width: 25px;
+  }
+  .heart {
+    border: 1px solid lightgray;
+    display: flex;
+    min-width: 50px;
+    width: 50px;
+    height: 50px;
+  }
+  .cart {
+    border: 1px solid #828282;
+  }
+
+  .buy {
+    background-color: #c41e20;
+    color: white;
+    border: 1px solid #c41e20;
+  }
+
+  div {
+    cursor: pointer;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+}
+
+.total {
+  margin-top: 20px;
+}
+.total_text {
+  font-size: 20px;
+}
+
+@media screen and (min-width: 1024px) {
+  /* Desktop */
+}
+@media screen and (max-width: 1023px) {
+  .item_description {
+    img {
+      width: 100%;
+    }
+  }
+  .item_payment_isUp_true {
+    bottom: -150px !important;
+  }
+  .item_container {
+  }
+
+  .item_title {
+    font-size: 18px !important;
+  }
+
+  .item_price {
+    font-size: 15px !important;
+  }
+  .item_payment {
+    padding-top: 15px;
+    background-color: white;
+    width: 100%;
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+    border-top: 1px solid lightgray;
+
+    height: 130px !important;
+  }
+
+  .total {
+    display: none;
+  }
+  .quantity_container {
+    position: absolute;
+    right: 15px;
+
+    div {
+      width: 35px;
+      height: 35px;
+      line-height: 35px;
+    }
+  }
+  .item_line {
+    display: none;
+  }
+  .item_icons {
+    position: relative;
+    bottom: 0px;
+    margin-top: 20px;
+    margin-bottom: 15px;
+    margin-right: 10px;
+
+    .heart {
+      height: 40px;
+    }
+    div {
+      height: 40px;
+    }
+  }
+}

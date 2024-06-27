@@ -65,3 +65,22 @@
     line-height: 50px;
   }
 }
+
+@media screen and (min-width: 1024px) {
+  /* Desktop */
+}
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+  /* Tablet */
+}
+@media screen and (max-width: 767px) {
+  .homeitems_container {
+  }
+
+  .homeitems_title {
+    width: 40vw !important;
+  }
+
+  img {
+    width: 40vw !important;
+  }
+}

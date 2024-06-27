@@ -12,6 +12,13 @@ const router = useRouter()
 const cookieValue = ref('')
 const decodedToken = ref(null)
 
+const keyInput = (e) => {
+  if (e.key === 'Enter') {
+    console.log('LOGIN')
+    login()
+  }
+}
+
 const decodeToken = (token: string) => {
   let decodeToken = null
 
@@ -69,8 +76,8 @@ const login = async () => {
     <div class="login_line"></div>
 
     <div class="input_container">
-      <input placeholder="아이디" v-model="id" />
-      <input placeholder="비밀번호" v-model="pw" type="password" />
+      <input placeholder="아이디" v-model="id" :onkeypress="keyInput" />
+      <input placeholder="비밀번호" v-model="pw" type="password" :onkeypress="keyInput" />
     </div>
 
     <div class="login_btn" @click="login">로그인</div>
