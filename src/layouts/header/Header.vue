@@ -5,9 +5,16 @@ import { ref } from 'vue'
 import { log } from 'console'
 const scrollY = ref(window.scrollY)
 const isTop = ref(window.scrollY === 0 ? true : false)
+const userHover = ref(false)
+const shopHover = ref(false)
+const searchClick = ref(false)
 
 const router = useRouter()
 let isMobileMenuOpen = ref(false)
+
+const search = () => {
+  searchClick.value = !searchClick.value
+}
 
 const moveHome = () => {
   router.push('/')
@@ -46,15 +53,42 @@ onBeforeUnmount(() => {
       <div class="logo" @click="moveHome">글루따띠온</div>
 
       <div class="menu_container">
-        <div class="menu">BEST</div>
-        <div class="menu">NEW</div>
-        <div class="menu">CATEGORY</div>
+        <div class="menu" @click="$router.push('/best')">BEST</div>
+        <div class="menu" @click="$router.push('/new')">NEW</div>
+        <div class="menu" @click="$router.push('/category')">CATEGORY</div>
       </div>
 
       <div class="icon_container">
-        <img src="@/assets/images/header/search.png" />
-        <img @click="moveLogin" src="@/assets/images/header/user.png" />
-        <img src="@/assets/images/header/shop.png" />
+        <div :class="`search_container tablet_search_container_${searchClick}`">
+          <input class="search_input" placeholder="search..." />
+          <img class="search_img" src="@/assets/images/header/search.png" />
+        </div>
+        <img src="@/assets/images/header/search.png" @click="search" />
+        <div @mouseleave="userHover = false">
+          <img
+            @click="moveLogin"
+            src="@/assets/images/header/user.png"
+            @mouseenter="userHover = true"
+          />
+
+          <div v-if="userHover" class="user_description_container">
+            <div>로그인</div>
+            <div>회원가입</div>
+          </div>
+        </div>
+
+        <div @mouseleave="shopHover = false">
+          <img
+            @click="moveLogin"
+            src="@/assets/images/header/shop.png"
+            @mouseenter="shopHover = true"
+          />
+
+          <div v-if="shopHover" class="shop_description_container">
+            <div>장바구니</div>
+            <div>찜목록</div>
+          </div>
+        </div>
       </div>
 
       <div class="mobile_menu">

@@ -35,6 +35,66 @@
     display: flex;
     gap: 40px;
   }
+  .user_description_container {
+    position: absolute;
+    right: 30px;
+    background-color: transparent;
+    padding-top: 20px;
+    top: 25px;
+    z-index: 200;
+
+    div:hover {
+      background-color: rgb(238, 238, 238);
+    }
+
+    div:nth-child(1) {
+      border-top: 1px solid lightgray;
+    }
+
+    div {
+      border-left: 1px solid lightgray;
+      border-right: 1px solid lightgray;
+      border-bottom: 1px solid lightgray;
+      cursor: pointer;
+      background-color: white;
+      font-size: 12px;
+      text-align: center;
+      height: 25px;
+      line-height: 25px;
+      width: 100px;
+    }
+  }
+
+  .shop_description_container {
+    position: absolute;
+    right: -25px;
+    background-color: transparent;
+    padding-top: 20px;
+    top: 27px;
+    z-index: 200;
+
+    div:hover {
+      background-color: rgb(238, 238, 238);
+    }
+
+    div:nth-child(1) {
+      border-top: 1px solid lightgray;
+    }
+
+    div {
+      border-left: 1px solid lightgray;
+      border-right: 1px solid lightgray;
+      border-bottom: 1px solid lightgray;
+      cursor: pointer;
+      background-color: white;
+      font-size: 12px;
+      text-align: center;
+      height: 25px;
+      line-height: 25px;
+      width: 100px;
+    }
+  }
+
   .menu {
     font-family: 'Pretendard';
     text-align: center;
@@ -58,6 +118,7 @@
       padding: 10px;
       cursor: pointer;
       width: 20px;
+      height: 20px;
     }
 
     img:hover {
@@ -66,7 +127,29 @@
   }
 }
 
+.search_input {
+  transition: 0.1s;
+  position: absolute;
+  width: 150px;
+  right: 160px;
+  top: 0px;
+  height: 40px;
+  outline: none;
+  background-color: transparent;
+  border: 0px;
+  border-bottom: 1px solid #5c5b5a;
+}
+
+.search_input:focus {
+  border-bottom: 2px solid #5c5b5a;
+}
+
 @media screen and (min-width: 1024px) {
+  .search_container {
+    img {
+      display: none;
+    }
+  }
   .mobile_menu {
     display: none;
   }
@@ -77,6 +160,37 @@
     display: none;
   }
   /* Tablet */
+  .tablet_search_container_false {
+    height: 0px !important;
+    overflow: hidden;
+  }
+  .search_container {
+    box-shadow: 0px 0px 3px lightgray;
+    transition: 0.3s;
+    display: flex;
+    position: fixed;
+    z-index: 100;
+    top: 0px;
+    left: 0px;
+    margin-top: 90px;
+    height: 90px;
+    width: 100%;
+    background-color: white !important;
+    justify-content: center;
+    align-items: center;
+
+    .search_img {
+      position: relative;
+      margin-right: 20px;
+    }
+
+    .search_input {
+      margin-left: 300px;
+      width: 100% !important;
+      position: relative;
+      text-align: center;
+    }
+  }
 }
 @media screen and (max-width: 767px) {
   /* Mobile */

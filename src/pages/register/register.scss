@@ -101,8 +101,12 @@
 @media screen and (max-width: 767px) {
   /* Tablet */
   .register {
-    width: 480px;
+    width: 400px;
   }
+  .register_input {
+    width: 220px !important;
+  }
+
   .register_sub {
     display: none;
   }
