@@ -11,8 +11,11 @@ const excludeURL = ['/api/user-service/login', '/api/user-service/members']
 //요청 인터셉터
 AxiosInstance.interceptors.request.use(
   (config) => {
-    const token = JSON.parse(localStorage.getItem('memberToken'))
-    const url = config.url?.toString()
+    const tokenString = localStorage.getItem('memberToken')
+    const token = tokenString ? JSON.parse(tokenString) : {}
+
+    const url = config.url ? config.url : ''
+
     if (excludeURL.includes(url)) {
       //URL이 포함이 되어있는지 여부
       return config

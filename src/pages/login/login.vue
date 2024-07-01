@@ -12,8 +12,8 @@ const router = useRouter()
 const cookieValue = ref('')
 const decodedToken = ref(null)
 
-const keyInput = (e) => {
-  if (e.key === 'Enter') {
+const keyInput = (event: any) => {
+  if (event.key === 'Enter') {
     console.log('LOGIN')
     login()
   }

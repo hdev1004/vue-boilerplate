@@ -10,7 +10,9 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   try {
-    const token = JSON.parse(window.localStorage.getItem('memberToken'))
+    const tokenString = localStorage.getItem('memberToken')
+    const token = tokenString ? JSON.parse(tokenString) : {}
+
     console.log('TOKEN : ', token)
     console.log(Date.now(), token?.expires)
     if (Date.now() > token?.expires) {

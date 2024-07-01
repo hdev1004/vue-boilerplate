@@ -66,7 +66,7 @@ const register = async () => {
 
     success('회원가입이 완료되었습니다.')
     router.push('/login')
-  } catch (err) {
+  } catch (err: any) {
     if (err.response.data.message === '이미 존재하는 loginId 입니다.') {
       warning('이미 존재하는 아이디 입니다')
     } else {

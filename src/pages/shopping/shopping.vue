@@ -1,6 +1,8 @@
 <script setup lang="ts">
 let itemIds = ['item1', 'item2', 'item3', 'item4', 'item5', 'item6']
-let items = ref({})
+let items = ref<{
+  [key: string]: boolean
+}>({})
 
 const entireItemClick = () => {
   if (itemIds.length === Object.keys(items.value).length) {

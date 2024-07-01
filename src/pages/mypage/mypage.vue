@@ -5,7 +5,8 @@ import Cookies from 'js-cookie'
 import { useRouter } from 'vue-router'
 
 const isModal = ref(false)
-const memberInfo = JSON.parse(Cookies.get('member'))
+const memberString = Cookies.get('member')
+const memberInfo = memberString ? JSON.parse(memberString) : {}
 const loginId = ref(memberInfo.loginId)
 const password = ref('')
 const rePassword = ref('')
