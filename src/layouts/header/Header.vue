@@ -2,8 +2,9 @@
 import { useRouter } from 'vue-router'
 import Cookies from 'js-cookie'
 import { ref } from 'vue'
-import { log } from 'console'
+import { useLoginCheckStore } from '@/stores/loginCheck'
 const scrollY = ref(window.scrollY)
+
 const isTop = ref(window.scrollY === 0 ? true : false)
 const userHover = ref(false)
 const shopHover = ref(false)
@@ -11,6 +12,16 @@ const searchClick = ref(false)
 
 const router = useRouter()
 let isMobileMenuOpen = ref(false)
+
+const loginCheckStore = useLoginCheckStore()
+
+const logout = () => {
+  if (confirm('로그아웃 하시겠습니까?')) {
+    window.localStorage.removeItem('memberToken')
+    Cookies.remove('member')
+    router.push('/')
+  }
+}
 
 const search = () => {
   searchClick.value = !searchClick.value
@@ -25,6 +36,15 @@ const moveLogin = () => {
     router.push('/mypage')
   } else {
     router.push('/login')
+  }
+}
+
+const moveShop = () => {
+  console.log(loginCheckStore.isLogin())
+  if (!loginCheckStore.isLogin()) {
+    router.push('/login')
+  } else {
+    router.push('./shopping')
   }
 }
 
@@ -72,21 +92,24 @@ onBeforeUnmount(() => {
           />
 
           <div v-if="userHover" class="user_description_container">
-            <div>로그인</div>
-            <div>회원가입</div>
+            <div v-if="loginCheckStore.isLogin()" @click="$router.push('/mypage')">마이페이지</div>
+            <div v-if="loginCheckStore.isLogin()" @click="logout">로그아웃</div>
+
+            <div v-if="!loginCheckStore.isLogin()" @click="$router.push('/login')">로그인</div>
+            <div v-if="!loginCheckStore.isLogin()" @click="$router.push('/register')">회원가입</div>
           </div>
         </div>
 
         <div @mouseleave="shopHover = false">
           <img
-            @click="moveLogin"
+            @click="moveShop"
             src="@/assets/images/header/shop.png"
             @mouseenter="shopHover = true"
           />
 
           <div v-if="shopHover" class="shop_description_container">
-            <div>장바구니</div>
-            <div>찜목록</div>
+            <div v-if="loginCheckStore.isLogin()" @click="$router.push('/shopping')">장바구니</div>
+            <div v-if="loginCheckStore.isLogin()" @click="$router.push('/wishlist')">찜목록</div>
           </div>
         </div>
       </div>

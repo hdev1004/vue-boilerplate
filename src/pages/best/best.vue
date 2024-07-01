@@ -1,7 +1,11 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import HomeItems from '@/components/Home/HomeItems.vue'
+</script>
 
 <template>
-  <section>베스트 상품</section>
+  <section class="best_container">
+    <HomeItems title="위클리 베스트" />
+  </section>
 </template>
 
 <style lang="scss" scoped>

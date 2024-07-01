@@ -31,6 +31,15 @@ const decodeToken = (token: string) => {
   return decodeToken
 }
 
+const setWithExpire = (memberToken: string, exp: number) => {
+  let now = new Date()
+  const item = {
+    memberToken: memberToken,
+    expires: now.getTime() + exp * 60 * 1000 * 1000
+  }
+  localStorage.setItem('memberToken', JSON.stringify(item))
+}
+
 const login = async () => {
   let data = null
   try {
@@ -40,7 +49,7 @@ const login = async () => {
     })
     console.log('DATA : ', data)
     const token = data.headers.token
-    localStorage.setItem('memberToken', token)
+    setWithExpire(token, 5)
     let memberSub = decodeToken(token).sub
 
     let memberInfo = null
@@ -60,7 +69,7 @@ const login = async () => {
     router.push('/')
   } catch (err) {
     warning('아이디 비빌번호를 확인해주세요.')
-    console.log(data, err)
+    console.log(err)
   }
 }
 </script>

@@ -6,12 +6,19 @@ const AxiosInstance = axios.create({
   timeout: 10000 // 요청이 타임아웃되기까지의 시간 (ms)
 })
 
+const excludeURL = ['/api/user-service/login', '/api/user-service/members']
+
 //요청 인터셉터
 AxiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('memberToken')
-    if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`
+    const token = JSON.parse(localStorage.getItem('memberToken'))
+    const url = config.url?.toString()
+    if (excludeURL.includes(url)) {
+      //URL이 포함이 되어있는지 여부
+      return config
+    }
+    if (token.memberToken) {
+      config.headers['Authorization'] = `Bearer ${token.memberToken}`
     }
     //요청 보내기 전에 수행 로직
     return config

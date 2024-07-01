@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { error, success, warning } from '@/utils/vueAlert'
 import RegisterModal from './registerModal.vue'
 import axiosInstance from '@/axios/axiosInstance'
-import { message } from 'ant-design-vue'
 
 const isModal = ref(false)
 const loginId = ref('')
@@ -13,16 +13,6 @@ const type = ref('회원가입') //회원가입, 오류 2개의 타입
 const title = ref('회원가입을 진행하시겠습니까?')
 const sub = ref('회원정보는 가입 후 변경할 수 있습니다.')
 const router = useRouter()
-
-const success = () => {
-  message.success('회원가입이 완료되었습니다.')
-}
-const error = () => {
-  message.error('회원가입도중 오류가 발생했습니다.')
-}
-const warning = () => {
-  message.warning('This is a warning message')
-}
 
 const registerCheck = () => {
   isModal.value = true
@@ -74,10 +64,14 @@ const register = async () => {
       memberName: memberName.value
     })
 
-    success()
+    success('회원가입이 완료되었습니다.')
     router.push('/login')
   } catch (err) {
-    error()
+    if (err.response.data.message === '이미 존재하는 loginId 입니다.') {
+      warning('이미 존재하는 아이디 입니다')
+    } else {
+      error('오류가 발생했습니다')
+    }
   }
   isModal.value = false
 }

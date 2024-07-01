@@ -16,11 +16,11 @@ import HomeItems from '@/components/Home/HomeItems.vue'
       </div>
     </a-carousel>
   </section>
-  <HomeItems />
+  <HomeItems title="위클리 베스트" />
   <div style="margin-top: 200px"></div>
-  <HomeItems />
+  <HomeItems title="신상품" />
   <div style="margin-top: 200px"></div>
-  <HomeItems />
+  <HomeItems title="스타일별 코디" />
   <div style="margin-top: 200px"></div>
 </template>
 

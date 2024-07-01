@@ -1,5 +1,9 @@
 <script setup lang="ts">
+import AxiosInstance from '@/axios/axiosInstance'
+import { error, success, warning } from '@/utils/vueAlert'
 import Cookies from 'js-cookie'
+import { useRouter } from 'vue-router'
+
 const isModal = ref(false)
 const memberInfo = JSON.parse(Cookies.get('member'))
 const loginId = ref(memberInfo.loginId)
@@ -9,7 +13,48 @@ const memberName = ref(memberInfo.memberName)
 const errorType = ref('none')
 const menuType = ref('정보수정')
 
-const updateCheck = () => {}
+const router = useRouter()
+
+const withdraw = async () => {
+  if (confirm('회원을 탈퇴하시겠습니까? 🥹')) {
+    let data = null
+    try {
+      data = await AxiosInstance.delete(`/api/user-service/members/${memberInfo.memberId}`)
+      console.log(data)
+
+      success('회원 탈퇴가 완료되었습니다.')
+      success('그동안 이용해주셔서 감사합니다. 🤗')
+
+      window.localStorage.removeItem('memberToken')
+      Cookies.remove('member')
+      router.push('/')
+    } catch (err) {
+      console.log(err)
+      error('회원 탈퇴 중 오류가 발생했습니다')
+    }
+  }
+}
+
+const updateCheck = async () => {
+  if (password.value !== rePassword.value || (password.value === '' && rePassword.value === '')) {
+    warning('비밀번호를 확인해주세요')
+    return
+  } else if (memberName.value.trim() === '') {
+    warning('이름을 확인해주세요')
+    return
+  }
+
+  let memberId = memberInfo.memberId
+  try {
+    let data = await AxiosInstance.put(`/api/user-service/members/${memberId}`, {
+      password: password.value,
+      memberName: memberName.value
+    })
+    success('회원 정보가 변경되었습니다.')
+  } catch (err) {
+    error('회원 변경 중 오류가 발생했습니다.')
+  }
+}
 </script>
 
 <template>
@@ -94,7 +139,7 @@ const updateCheck = () => {}
         <div>정말로 탈퇴하시겠습니까? 🥹</div>
         <div>탈퇴 시 정보가 삭제 됩니다.</div>
 
-        <div class="delete_btn">회원탈퇴</div>
+        <div class="delete_btn" @click="withdraw">회원탈퇴</div>
       </div>
     </div>
   </section>

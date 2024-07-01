@@ -1,0 +1,145 @@
+.shopping_container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+}
+.item_card_container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.shopping_logo {
+  margin-bottom: 50px;
+  text-align: center;
+  height: 55px;
+  line-height: 55px;
+  font-size: 30px;
+  font-family: 'HSSanTokki20-Regular';
+  color: #5c5b5a;
+  margin-top: 130px;
+}
+
+.item_card {
+  width: 600px;
+  position: relative;
+  display: flex;
+}
+
+.item_contents {
+  display: flex;
+  gap: 20px;
+
+  .item_images_container {
+    width: 150px;
+    height: 150px;
+    overflow: hidden;
+  }
+
+  img {
+    cursor: pointer;
+    transition: 0.3s;
+    width: 150px;
+    height: 150px;
+  }
+
+  img:hover {
+    scale: 1.2;
+  }
+}
+
+.item_title {
+  font-size: 20px;
+  overflow: hidden; // 을 사용해 영역을 감출 것
+  text-overflow: ellipsis; // 로 ... 을 만들기
+  white-space: nowrap; // 아래줄로 내려가는 것을 막기위해
+  word-break: break-all;
+  width: 380px;
+  height: 20px;
+}
+
+.item_price {
+  font-weight: 500;
+  font-size: 17px;
+}
+
+.item_delete {
+  cursor: pointer;
+  position: absolute;
+  bottom: 0px;
+  left: 170px;
+  padding: 5px;
+  background-color: #f16f6f;
+  border-radius: 5px;
+  color: white;
+}
+
+.item_checkbox {
+  width: 30px;
+  height: 30px;
+
+  position: absolute;
+  right: 0px;
+}
+
+.item_batch_btn {
+  position: relative;
+  display: flex;
+  gap: 10px;
+  width: 600px;
+  text-align: center;
+  div {
+    transition: 0.3s;
+    cursor: pointer;
+    padding: 10px;
+    flex: 1;
+    border-radius: 5px;
+    background: #f6f4ee;
+    color: rgb(70, 70, 70);
+    margin-top: 50px;
+  }
+  div:hover {
+    background-color: #cfc8b1;
+  }
+}
+
+.item_cashier {
+  display: flex;
+  width: 600px;
+  gap: 10px;
+  div {
+    flex: 1;
+    text-align: center;
+    margin-top: 10px;
+    padding: 10px;
+  }
+
+  div:nth-child(2) {
+    font-weight: bold;
+  }
+}
+
+.item_cashier_container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+  width: 600px;
+  margin-bottom: 100px;
+  gap: 10px;
+
+  div {
+    transition: 0.3s;
+    border-radius: 5px;
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    background-color: #f6f4ee;
+    color: rgb(70, 70, 70);
+  }
+
+  div:hover {
+    background-color: #cfc8b1;
+  }
+}

@@ -67,7 +67,7 @@ const items = [
 
 <template>
   <section class="homeitems_container">
-    <div class="homeitems_logo">위클리 베스트</div>
+    <div class="homeitems_logo">{{ props.title }}</div>
     <div class="homeitems_items">
       <div v-for="item in items" :key="`item${item.rank}`">
         <div class="homeitems_card">

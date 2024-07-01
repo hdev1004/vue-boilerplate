@@ -1,7 +1,11 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import HomeItems from '@/components/Home/HomeItems.vue'
+</script>
 
 <template>
-  <section>신상품</section>
+  <section class="new_container">
+    <HomeItems title="신상품" />
+  </section>
 </template>
 
 <style lang="scss" scoped>
