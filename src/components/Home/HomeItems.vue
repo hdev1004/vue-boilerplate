@@ -71,10 +71,7 @@ const items = [
     <div class="homeitems_items">
       <div v-for="item in items" :key="`item${item.rank}`">
         <div class="homeitems_card">
-          <img
-            :src="`/src/assets/images/main/clothes${item.rank}.jpg`"
-            @click="$router.push('item')"
-          />
+          <img src="@/assets/images/main/clothes1.jpg" @click="$router.push('item')" />
           <div class="homeitems_rank">{{ item.rank }}</div>
           <div class="homeitems_title">{{ item.title }}</div>
           <div class="homeitems_price">{{ item.price.toLocaleString() }}</div>
