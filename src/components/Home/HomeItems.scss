@@ -43,8 +43,10 @@
     color: #9a9a9a;
   }
   img {
+    object-fit: cover;
     transition: 0.3s;
     width: 20vw;
+    height: 29.5vw;
     cursor: pointer;
   }
 
