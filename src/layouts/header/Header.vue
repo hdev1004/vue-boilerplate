@@ -40,8 +40,8 @@ const moveLogin = () => {
 }
 
 const moveShop = () => {
-  console.log(loginCheckStore.isLogin())
-  if (!loginCheckStore.isLogin()) {
+  console.log(loginCheckStore.isLogin)
+  if (!loginCheckStore.isLogin) {
     router.push('/login')
   } else {
     router.push('./shopping')
@@ -92,11 +92,11 @@ onBeforeUnmount(() => {
           />
 
           <div v-if="userHover" class="user_description_container">
-            <div v-if="loginCheckStore.isLogin()" @click="$router.push('/mypage')">마이페이지</div>
-            <div v-if="loginCheckStore.isLogin()" @click="logout">로그아웃</div>
+            <div v-if="loginCheckStore.isLogin" @click="$router.push('/mypage')">마이페이지</div>
+            <div v-if="loginCheckStore.isLogin" @click="logout">로그아웃</div>
 
-            <div v-if="!loginCheckStore.isLogin()" @click="$router.push('/login')">로그인</div>
-            <div v-if="!loginCheckStore.isLogin()" @click="$router.push('/register')">회원가입</div>
+            <div v-if="!loginCheckStore.isLogin" @click="$router.push('/login')">로그인</div>
+            <div v-if="!loginCheckStore.isLogin" @click="$router.push('/register')">회원가입</div>
           </div>
         </div>
 
@@ -108,8 +108,8 @@ onBeforeUnmount(() => {
           />
 
           <div v-if="shopHover" class="shop_description_container">
-            <div v-if="loginCheckStore.isLogin()" @click="$router.push('/shopping')">장바구니</div>
-            <div v-if="loginCheckStore.isLogin()" @click="$router.push('/wishlist')">찜목록</div>
+            <div v-if="loginCheckStore.isLogin" @click="$router.push('/shopping')">장바구니</div>
+            <div v-if="loginCheckStore.isLogin" @click="$router.push('/wishlist')">찜목록</div>
           </div>
         </div>
       </div>
