@@ -126,6 +126,11 @@ onBeforeUnmount(() => {
             src="@/assets/images/header/close.png"
             @click="isMobileMenuOpen = false"
           />
+
+          <div class="mobile_menu_bar">
+            <div>로그인</div>
+            <div>회원가입</div>
+          </div>
         </div>
       </div>
     </section>
