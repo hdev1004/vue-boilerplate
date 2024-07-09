@@ -21,5 +21,21 @@ export const useLoginCheckStore = defineStore('login', () => {
     }
   }
 
-  return { isLogin, loginCheck }
+  const memberInfo = () => {
+    if (isLogin.value) {
+      const cookieString = Cookies.get('member')
+      const tokenString = localStorage.getItem('memberToken')
+      let token = null
+      let cookie = null
+
+      if (tokenString) token = JSON.parse(tokenString)
+      if (cookieString) cookie = JSON.parse(cookieString)
+      return {
+        ...cookie,
+        ...token
+      }
+    }
+  }
+
+  return { isLogin, loginCheck, memberInfo }
 })

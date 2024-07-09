@@ -1,8 +1,28 @@
 <script setup lang="ts">
+import AxiosInstance from '@/axios/axiosInstance'
+
 const quantity = ref(1)
 const isUp = ref(false)
 const preScrollTop = ref(0)
+const item = ref<any>({})
+const route = useRoute()
+const thumbnailImage = ref('')
+
 window.scrollTo(0, 0)
+
+const loading = async () => {
+  const productId = route.query.id
+  let res = null
+
+  try {
+    res = await AxiosInstance.get(`/api/product-service/products/${productId}`)
+    item.value = res.data
+  } catch (err: any) {
+    console.log('Error : ', err)
+  }
+}
+
+loading()
 
 const handleScroll = () => {
   let nextScrollTop = window.scrollY
@@ -37,15 +57,16 @@ const up = () => {
   <section class="item_container">
     <div class="item_divistion">
       <div class="item_description">
-        <img src="@/assets/images/main/clothes1.jpg" />
-        <img src="@/assets/images/main/clothes2.jpg" />
-        <img src="@/assets/images/main/clothes3.jpg" />
-        <img src="@/assets/images/main/clothes4.jpg" />
+        <img
+          class="thumbnail_img"
+          :src="`/api/product-service/products/images/${item.thumbnailImageId}`"
+        />
+        <div v-html="item.content"></div>
       </div>
       <div :class="`item_payment item_payment_isUp_${isUp}`">
         <div class="item_title_container">
-          <div class="item_title">[남녀공용] 데님 밴딩 쇼츠</div>
-          <div class="item_price">19,900</div>
+          <div class="item_title">{{ item.name }}</div>
+          <div class="item_price">{{ item.unitPrice }}</div>
         </div>
 
         <div class="item_line"></div>
@@ -65,7 +86,7 @@ const up = () => {
         <div class="total">
           <div class="total_text">총 상품금액</div>
           <div class="total_quantity">
-            {{ (quantity * 19900).toLocaleString() }}원 ({{ quantity }}개)
+            {{ (quantity * item.unitPrice).toLocaleString() }}원 ({{ quantity }}개)
           </div>
         </div>
       </div>

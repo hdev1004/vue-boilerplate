@@ -10,6 +10,7 @@ const props = defineProps({
 
 let itemList = ref<
   Array<{
+    productId: number
     thumbnailImageId: number
     name: string
     quantity: number
@@ -39,8 +40,15 @@ getItemList()
       <div v-for="(item, index) in itemList" :key="`item${index}`">
         <div class="homeitems_card">
           <img
-            :src="`http://211.218.223.120:30002/product-service/products/images/${item.thumbnailImageId}`"
-            @click="$router.push('item')"
+            :src="`/api/product-service/products/images/${item.thumbnailImageId}`"
+            @click="
+              $router.push({
+                path: 'item',
+                query: {
+                  id: item.productId
+                }
+              })
+            "
           />
           <div class="homeitems_rank">{{ index + 1 }}</div>
           <div class="homeitems_title">{{ item.name }}</div>

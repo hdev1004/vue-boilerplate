@@ -20,11 +20,17 @@ const logout = () => {
     window.localStorage.removeItem('memberToken')
     Cookies.remove('member')
     router.push('/')
+    isMobileMenuOpen.value = false
   }
 }
 
 const search = () => {
   searchClick.value = !searchClick.value
+}
+
+const moveMenu = (link: string) => {
+  router.push(link)
+  isMobileMenuOpen.value = false
 }
 
 const moveHome = () => {
@@ -127,9 +133,38 @@ onBeforeUnmount(() => {
             @click="isMobileMenuOpen = false"
           />
 
-          <div class="mobile_menu_bar">
-            <div>로그인</div>
-            <div>회원가입</div>
+          <div style="margin-top: 50px"></div>
+          <div class="mobile_login_text">
+            <div v-if="!loginCheckStore.isLogin">고객님은 로그아웃 상태입니다.</div>
+            <div v-if="!loginCheckStore.isLogin">회원가입 하시고 많은 혜택 받아가세요!</div>
+
+            <div v-if="loginCheckStore.isLogin">
+              {{ loginCheckStore.memberInfo().memberName }}님 안녕하세요.
+            </div>
+            <div v-if="loginCheckStore.isLogin">글루따띠온에 방문해주셔서 감사합니다</div>
+
+            <div class="logout_btn" v-if="loginCheckStore.isLogin" @click="logout()">로그아웃</div>
+          </div>
+
+          <div class="mobile_login_line"></div>
+
+          <div v-if="!loginCheckStore.isLogin" class="mobile_menu_bar">
+            <div @click="moveMenu('/login')">로그인</div>
+            <div @click="moveMenu('/register')">회원가입</div>
+          </div>
+
+          <div v-if="loginCheckStore.isLogin" class="mobile_menu_bar">
+            <div @click="moveMenu('/mypage')">마이페이지</div>
+            <div @click="moveMenu('/shopping')">장바구니</div>
+            <div @click="moveMenu('/wishlist')">찜목록</div>
+          </div>
+
+          <div class="mobile_menu_shop">Shop</div>
+
+          <div class="mobile_mebu_sub_shop">
+            <div @click="moveMenu('/best')">Best</div>
+            <div @click="moveMenu('/new')">New</div>
+            <div @click="moveMenu('/category')">Category</div>
           </div>
         </div>
       </div>
