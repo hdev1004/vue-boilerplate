@@ -1,2 +1,15 @@
-docker build -t hdev1004/vue-boilerplate .
-docker run -d --name vue -p 8090:8090 hdev1004/vue-boilerplate
+
+set IMAGE_NAME=hdev1004/vue-boilerplate
+set CONTAINER_NAME=vue
+
+echo Stopping and removing any running containers named %CONTAINER_NAME%...
+docker stop %CONTAINER_NAME%
+docker rm %CONTAINER_NAME%
+
+echo Removing the image named %IMAGE_NAME%...
+docker rmi %IMAGE_NAME%
+
+echo Building the new image named %IMAGE_NAME%...
+docker build -t %IMAGE_NAME% .
+
+docker run -d --name %CONTAINER_NAME% -p 8090:8090 %IMAGE_NAME%
