@@ -112,6 +112,10 @@
 .total_text {
   font-size: 20px;
 }
+.item_html {
+  width: 100vw;
+  overflow: hidden;
+}
 
 @media screen and (min-width: 1024px) {
   /* Desktop */
@@ -119,13 +123,15 @@
 @media screen and (max-width: 1023px) {
   .item_description {
     img {
-      width: 100%;
+      width: 100vw !important;
     }
   }
   .item_payment_isUp_true {
     bottom: -150px !important;
   }
   .item_container {
+    width: 100vw;
+    overflow: hidden;
   }
 
   .item_title {
@@ -136,9 +142,10 @@
     font-size: 15px !important;
   }
   .item_payment {
+    padding-right: 10px;
+    min-width: 100%;
     padding-top: 15px;
     background-color: white;
-    width: 100%;
     position: fixed;
     bottom: 0px;
     left: 0px;
@@ -168,10 +175,14 @@
     bottom: 0px;
     margin-top: 20px;
     margin-bottom: 15px;
-    margin-right: 10px;
 
     .heart {
+      width: 40px !important;
       height: 40px;
+
+      img {
+        width: 20px;
+      }
     }
     div {
       height: 40px;

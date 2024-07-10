@@ -71,14 +71,22 @@
     color: #5c5b5a;
   }
 
-  .wishlist_delete {
+  .wishlist_delete_container {
+    background-color: #f16f6f;
     position: absolute;
+    top: 0px;
+    right: 0px;
+    cursor: pointer;
     width: 30px;
     height: 30px;
-    color: white;
-    bottom: 5px;
-    right: 5px;
-    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .wishlist_delete {
+    width: 20px;
+    height: 20px;
   }
 }
 

@@ -13,14 +13,17 @@ const type = ref('회원가입') //회원가입, 오류 2개의 타입
 const title = ref('회원가입을 진행하시겠습니까?')
 const sub = ref('회원정보는 가입 후 변경할 수 있습니다.')
 const router = useRouter()
+const isError = ref(false)
 
 const registerCheck = () => {
   isModal.value = true
+  isError.value = false
   if (loginId.value.trim() === '') {
     errorType.value = '아이디'
     type.value = '오류'
     title.value = '아이디를 입력해주세요.'
     sub.value = ''
+    isError.value = true
     return
   }
 
@@ -29,6 +32,7 @@ const registerCheck = () => {
     type.value = '오류'
     title.value = '비빌번호를 입력해주세요.'
     sub.value = ''
+    isError.value = true
     return
   }
 
@@ -37,6 +41,7 @@ const registerCheck = () => {
     type.value = '오류'
     title.value = '비밀번호가 같지 않습니다.'
     sub.value = ''
+    isError.value = true
     return
   }
 
@@ -45,6 +50,7 @@ const registerCheck = () => {
     type.value = '오류'
     title.value = '사용자 이름을 입력해주세요.'
     sub.value = ''
+    isError.value = true
     return
   }
   errorType.value = 'none'
@@ -57,6 +63,10 @@ const registerCheck = () => {
 //회원가입 함수
 const register = async () => {
   let data = null
+  if (errorType.value !== 'none') {
+    isModal.value = false
+    return
+  }
   try {
     data = await axiosInstance.post('/api/user-service/members', {
       loginId: loginId.value,

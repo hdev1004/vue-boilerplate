@@ -20,6 +20,23 @@
   gap: 30px;
 }
 
+.homeitems_heart {
+  position: absolute;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  bottom: 0px;
+  gap: 5px;
+  display: flex;
+  align-items: center;
+  color: #fd4d86;
+
+  img {
+    width: 20px !important;
+    height: 20px !important;
+  }
+}
+
 .homeitems_card {
   position: relative;
 

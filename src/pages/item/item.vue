@@ -7,6 +7,7 @@ const preScrollTop = ref(0)
 const item = ref<any>({})
 const route = useRoute()
 const thumbnailImage = ref('')
+const htmlRef = ref(null)
 
 window.scrollTo(0, 0)
 
@@ -37,6 +38,11 @@ const handleScroll = () => {
 
 onMounted(() => {
   window.addEventListener('scroll', handleScroll)
+  if (htmlRef.value) {
+    console.log('HTML : ', htmlRef.value)
+    let images = document.querySelectorAll('img')
+    console.log('images : ', images)
+  }
 })
 onBeforeUnmount(() => {
   window.removeEventListener('scroll', handleScroll)
@@ -61,7 +67,7 @@ const up = () => {
           class="thumbnail_img"
           :src="`/api/product-service/products/images/${item.thumbnailImageId}`"
         />
-        <div v-html="item.content"></div>
+        <div class="item_html" v-html="item.content" ref="htmlRef"></div>
       </div>
       <div :class="`item_payment item_payment_isUp_${isUp}`">
         <div class="item_title_container">
@@ -94,6 +100,6 @@ const up = () => {
   </section>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import url('./item.scss');
 </style>

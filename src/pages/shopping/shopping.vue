@@ -46,7 +46,7 @@ const itemCheckbox = (item: string) => {
       <div v-for="item in itemIds" v-bind:key="item" class="item_card" :id="item">
         <div class="item_contents">
           <div class="item_images_container">
-            <img src="@/assets/images/main/clothes1.jpg" />
+            <img class="item_image" src="@/assets/images/main/clothes1.jpg" />
           </div>
           <div>
             <div class="item_title">
@@ -54,15 +54,15 @@ const itemCheckbox = (item: string) => {
             </div>
             <div class="item_price">15,000원</div>
           </div>
+          <div class="item_delete" @click="itemDelete(item)">
+            <img src="@/assets/images/header/closeWhite.png" />
+          </div>
+          <a-checkbox
+            class="item_checkbox"
+            :checked="items[item]"
+            @change="itemCheckbox(item)"
+          ></a-checkbox>
         </div>
-
-        <div class="item_delete" @click="itemDelete(item)">삭제</div>
-
-        <a-checkbox
-          class="item_checkbox"
-          :checked="items[item]"
-          @change="itemCheckbox(item)"
-        ></a-checkbox>
       </div>
     </div>
 

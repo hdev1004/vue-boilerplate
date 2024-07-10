@@ -101,12 +101,14 @@
 @media screen and (max-width: 767px) {
   /* Tablet */
   .register {
-    width: 400px;
+    width: 80% !important;
   }
   .register_input {
-    width: 220px !important;
+    width: 160px !important;
   }
-
+  .register_table {
+    margin-left: -20px;
+  }
   .register_sub {
     display: none;
   }

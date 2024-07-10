@@ -94,3 +94,11 @@
     color: white;
   }
 }
+
+@media screen and (max-width: 767px) {
+  .modal {
+    width: 300px !important;
+    left: calc(50% - 150px);
+    top: calc(50% - 150px);
+  }
+}
