@@ -18,7 +18,9 @@ const member = memberString ? JSON.parse(memberString) : ''
         <img class="wishlist_image" src="@/assets/images/main/clothes2.jpg" alt="이미지" />
         <div class="wishlist_title">제품 이름</div>
         <div class="wishlist_subtitle">제품 상세 설명</div>
-        <img class="wishlist_delete" src="@/assets/images/main/trash.png" alt="쓰레기통" />
+        <div class="wishlist_delete_container">
+          <img class="wishlist_delete" src="@/assets/images/header/closeWhite.png" alt="쓰레기통" />
+        </div>
       </div>
     </div>
   </section>

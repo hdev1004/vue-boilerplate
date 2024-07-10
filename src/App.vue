@@ -10,13 +10,13 @@ const loginCheckStore = useLoginCheckStore()
 
 const route = useRoute()
 const router = useRouter()
-const excludeURL = ['/', '/best', '/new', '/category', '/item', '/login', '/register']
+const excludeURL = ['/', '/best', '/new', '/category', '/item', '/login', '/register', '/item']
 
 watch(
   () => route.fullPath,
   (newPath, oldPath) => {
     loginCheckStore.loginCheck()
-    if (!excludeURL.includes(newPath)) {
+    if (!excludeURL.includes(newPath.split('?')[0])) {
       //로그인이 되어있어야 할 링크들에
       if (!loginCheckStore.isLogin) {
         //로그인이 안되어 있으면 홈으로 이동
