@@ -9,6 +9,7 @@ const item = ref<any>({})
 const route = useRoute()
 const thumbnailImage = ref('')
 const htmlRef = ref(null)
+const spinning = ref(false)
 
 const inquiry_input = ref('')
 const inquiry = ref<Array<any>>([])
@@ -104,63 +105,65 @@ const up = () => {
 
 <template>
   <section class="item_container">
-    <div class="item_divistion">
-      <div class="item_description">
-        <img
-          class="thumbnail_img"
-          :src="`/api/product-service/products/images/${item.thumbnailImageId}`"
-        />
-        <div class="item_html" v-html="item.content" ref="htmlRef"></div>
+    <a-spin :spinning="item">
+      <div class="item_divistion">
+        <div class="item_description">
+          <img
+            class="thumbnail_img"
+            :src="`/api/product-service/products/images/${item.thumbnailImageId}`"
+          />
+          <div class="item_html" v-html="item.content" ref="htmlRef"></div>
 
-        <div class="inquiry">
-          <div class="inquiry_register">
-            <textarea placeholder="문의 내용을 작성해주세요" v-model="inquiry_input" />
-            <div class="inquiry_btn" @click="inquiryClick">등록</div>
+          <div class="inquiry">
+            <div class="inquiry_register">
+              <textarea placeholder="문의 내용을 작성해주세요" v-model="inquiry_input" />
+              <div class="inquiry_btn" @click="inquiryClick">등록</div>
+            </div>
+
+            <div class="inquiry_line"></div>
+
+            <div>
+              <div class="inquiry_table_title"></div>
+              <div class="inquiry_row" v-for="(item, index) in inquiry" v-bind:key="index">
+                <div class="inquiry_q">{{ item.content }}</div>
+                <div class="inquiry_a" v-if="item.answer">{{ item.answer }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div :class="`item_payment item_payment_isUp_${isUp}`">
+          <div class="item_title_container">
+            <div class="item_title">{{ item.name }}</div>
+            <div class="item_price">{{ item.unitPrice }}</div>
           </div>
 
-          <div class="inquiry_line"></div>
+          <div class="item_line"></div>
 
-          <div>
-            <div class="inquiry_table_title"></div>
-            <div class="inquiry_row" v-for="(item, index) in inquiry" v-bind:key="index">
-              <div class="inquiry_q">{{ item.content }}</div>
-              <div class="inquiry_a" v-if="item.answer">{{ item.answer }}</div>
+          <div class="quantity_container">
+            <div class="minus" @click="down">-</div>
+            <div class="quantity">{{ quantity }}</div>
+            <div class="plus" @click="up">+</div>
+          </div>
+
+          <div class="item_icons">
+            <div class="heart" @click="clickHeart">
+              <img v-if="item.isFavor" src="@/assets/images/header/heartFill.png" />
+              <img v-else src="@/assets/images/header/heart.png" />
+            </div>
+            <div class="cart">장바구니</div>
+            <div class="buy">바로구매</div>
+          </div>
+
+          <div class="total">
+            <div class="total_text">총 상품금액</div>
+            <div class="total_quantity">
+              {{ (quantity * item.unitPrice).toLocaleString() }}원 ({{ quantity }}개)
             </div>
           </div>
         </div>
       </div>
-
-      <div :class="`item_payment item_payment_isUp_${isUp}`">
-        <div class="item_title_container">
-          <div class="item_title">{{ item.name }}</div>
-          <div class="item_price">{{ item.unitPrice }}</div>
-        </div>
-
-        <div class="item_line"></div>
-
-        <div class="quantity_container">
-          <div class="minus" @click="down">-</div>
-          <div class="quantity">{{ quantity }}</div>
-          <div class="plus" @click="up">+</div>
-        </div>
-
-        <div class="item_icons">
-          <div class="heart" @click="clickHeart">
-            <img v-if="item.isFavor" src="@/assets/images/header/heartFill.png" />
-            <img v-else src="@/assets/images/header/heart.png" />
-          </div>
-          <div class="cart">장바구니</div>
-          <div class="buy">바로구매</div>
-        </div>
-
-        <div class="total">
-          <div class="total_text">총 상품금액</div>
-          <div class="total_quantity">
-            {{ (quantity * item.unitPrice).toLocaleString() }}원 ({{ quantity }}개)
-          </div>
-        </div>
-      </div>
-    </div>
+    </a-spin>
   </section>
 </template>
 
