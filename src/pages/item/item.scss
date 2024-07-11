@@ -7,8 +7,17 @@
 }
 
 .item_description {
+  width: 70vw;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  margin-top: 20px;
   img {
-    width: calc(100% - 420px);
+    width: 60%;
+  }
+
+  .item_html {
+    overflow: hidden;
   }
 }
 
@@ -112,18 +121,15 @@
 .total_text {
   font-size: 20px;
 }
-.item_html {
-  width: 100vw;
-  overflow: hidden;
-}
-
 @media screen and (min-width: 1024px) {
   /* Desktop */
 }
 @media screen and (max-width: 1023px) {
   .item_description {
+    width: 80vw;
+
     img {
-      width: 100vw !important;
+      width: 100% !important;
     }
   }
   .item_payment_isUp_true {
@@ -188,4 +194,70 @@
       height: 40px;
     }
   }
+}
+
+.inquiry {
+  margin-top: 50px;
+  margin-bottom: 50px;
+  width: 60%;
+}
+
+.inquiry_register {
+  width: 100%;
+
+  textarea {
+    border: 1px solid lightgray;
+    outline: none;
+    padding: 20px;
+    resize: none;
+    width: 100%;
+    box-sizing: border-box;
+    height: 150px;
+  }
+
+  .inquiry_btn {
+    margin-top: 30px;
+    width: 150px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    background-color: #05153b;
+    color: white;
+    transition: 0.3s;
+    cursor: pointer;
+    margin-bottom: 30px !important;
+  }
+}
+
+.inquiry_table_title {
+  font-weight: bold;
+  font-size: 25px;
+  color: #05153b;
+}
+
+.inquiry_row {
+  margin-bottom: 10px;
+  .inquiry_q {
+    padding-top: 20px;
+    padding-bottom: 20px;
+
+    &::before {
+      content: 'Q. ';
+    }
+  }
+
+  .inquiry_a {
+    padding: 20px;
+    background-color: rgb(240, 240, 240);
+
+    &::before {
+      content: 'A. ';
+    }
+  }
+  border-bottom: 1px solid lightgray;
+}
+
+.inquiry_line {
+  border-bottom: 1px solid lightgray;
+  margin-bottom: 20px;
 }
