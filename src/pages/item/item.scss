@@ -22,6 +22,7 @@
 }
 
 .item_payment {
+  border-left: 1px solid rgb(238, 237, 237);
   right: 0px;
   height: 100vh;
   position: fixed;
@@ -202,6 +203,22 @@
   width: 60%;
 }
 
+.inquiry_div {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  .content::before {
+    content: 'Q. ';
+  }
+
+  .delete {
+    font-weight: 300;
+    font-size: 13px;
+    cursor: pointer;
+  }
+}
+
 .inquiry_register {
   width: 100%;
 
@@ -240,10 +257,8 @@
   .inquiry_q {
     padding-top: 20px;
     padding-bottom: 20px;
-
-    &::before {
-      content: 'Q. ';
-    }
+    display: flex;
+    justify-content: space-between;
   }
 
   .inquiry_a {

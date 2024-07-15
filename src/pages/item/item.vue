@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import AxiosInstance from '@/axios/axiosInstance'
 import { success, error } from '@/utils/vueAlert'
+import Cookies from 'js-cookie'
 
 const quantity = ref(1)
 const isUp = ref(false)
@@ -14,7 +15,49 @@ const spinning = ref(false)
 const inquiry_input = ref('')
 const inquiry = ref<Array<any>>([])
 
+const memberInfoString = Cookies.get('member')
+let memberInfo = ref<any>({})
+
+if (memberInfoString) {
+  memberInfo.value = JSON.parse(memberInfoString)
+}
+
 window.scrollTo(0, 0)
+
+function formatDatetime(datetimeStr: string) {
+  const date = new Date(datetimeStr)
+
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+
+  const hours = String(date.getHours()).padStart(2, '0')
+  const minutes = String(date.getMinutes()).padStart(2, '0')
+
+  return `${year}.${month}.${day} ${hours}.${minutes}`
+}
+
+const inquiryDelete = async (inquiryId: number) => {
+  const productId = route.query.id
+  let res = null
+
+  try {
+    res = await AxiosInstance.delete(`/api/product-service/products/inquires/${inquiryId}`)
+    if (res === null) return
+
+    success('문의가 삭제되었습니다.')
+
+    res = await AxiosInstance.get(`/api/product-service/products/${productId}/inquires`)
+    if (res === null) return
+
+    inquiry_input.value = ''
+    inquiry.value = res.data.inquires
+    console.log(inquiry.value)
+  } catch (err: any) {
+    error('오류가 발생했습니다.')
+    console.log(err.response.data.message)
+  }
+}
 
 const clickHeart = async () => {
   const productId = route.query.id
@@ -138,8 +181,21 @@ const up = () => {
             <div>
               <div class="inquiry_table_title"></div>
               <div class="inquiry_row" v-for="(item, index) in inquiry" v-bind:key="index">
-                <div class="inquiry_q">{{ item.content }}</div>
-                <div class="inquiry_a" v-if="item.answer">{{ item.answer }}</div>
+                <div class="inquiry_q">
+                  <div class="inquiry_div">
+                    <div class="content">{{ item.content }}</div>
+
+                    <div
+                      class="delete"
+                      @click="inquiryDelete(item.productInquireId)"
+                      v-if="memberInfo.memberId == item.memberId"
+                    >
+                      삭제
+                    </div>
+                  </div>
+                  <div>{{ formatDatetime(item.createdAt) }}</div>
+                </div>
+                <div class="inquiry_a" v-if="item.answer">{{ item.answer.content }}</div>
               </div>
             </div>
           </div>
