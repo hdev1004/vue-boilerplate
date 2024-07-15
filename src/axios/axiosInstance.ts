@@ -1,5 +1,12 @@
 // axios 모듈을 가져옵니다.
+
+import router from '@/router'
+import { useLoginCheckStore } from '@/stores/loginCheck'
+import { error, warning } from '@/utils/vueAlert'
 import axios from 'axios'
+import Cookies from 'js-cookie'
+
+const loginCheckStore = useLoginCheckStore()
 
 const AxiosInstance = axios.create({
   baseURL: '/', // 기본 URL 설정
@@ -37,9 +44,20 @@ AxiosInstance.interceptors.response.use(
   (response) => {
     //응답에 대한 로직
     const res = response
+
     return res
   },
   (err) => {
+    if (err.response.data.code === 'JWT_EXPIRED') {
+      warning('로그아웃 되었습니다.')
+      warning('로그인을 다시 시도해주세요.')
+      loginCheckStore.logout()
+      router.push('/login')
+      return null
+    } else if (err.response.data.message === 'No authorization header') {
+      warning('해당 작업은 로그인이 필요합니다 🥹')
+      return null
+    }
     return Promise.reject(err)
   }
 )

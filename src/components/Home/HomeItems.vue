@@ -25,6 +25,7 @@ let itemList = ref<
 const getItemList = async () => {
   try {
     let data = await AxiosInstance.get('/api/product-service/products/search?page=1&size=8')
+    if (data === null) return
     itemList.value = data.data?.contents
 
     console.log(itemList.value)
@@ -38,8 +39,10 @@ const clickHeart = async (productId: number, isFavor: Boolean) => {
   try {
     if (isFavor) {
       let data = await AxiosInstance.delete(`/api/product-service/products/${productId}/favorite`)
+      if (data === null) return
     } else {
       let data = await AxiosInstance.post(`/api/product-service/products/${productId}/favorite`)
+      if (data === null) return
     }
     getItemList()
   } catch (err: any) {

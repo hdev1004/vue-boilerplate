@@ -21,6 +21,7 @@ const withdraw = async () => {
     let data = null
     try {
       data = await AxiosInstance.delete(`/api/user-service/members/${memberInfo.memberId}`)
+      if (data === null) return
       console.log(data)
 
       success('회원 탈퇴가 완료되었습니다.')
@@ -51,6 +52,7 @@ const updateCheck = async () => {
       password: password.value,
       memberName: memberName.value
     })
+    if (data === null) return
     success('회원 정보가 변경되었습니다.')
   } catch (err) {
     error('회원 변경 중 오류가 발생했습니다.')

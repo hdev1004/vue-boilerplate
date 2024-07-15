@@ -4,6 +4,10 @@ import Cookies from 'js-cookie'
 export const useLoginCheckStore = defineStore('login', () => {
   const isLogin = ref(false)
 
+  const logout = () => {
+    Cookies.remove('member')
+    localStorage.removeItem('memberToken')
+  }
   const loginCheck = () => {
     const tokenString = localStorage.getItem('memberToken')
     const cookieString = Cookies.get('member')
@@ -37,5 +41,5 @@ export const useLoginCheckStore = defineStore('login', () => {
     }
   }
 
-  return { isLogin, loginCheck, memberInfo }
+  return { isLogin, loginCheck, memberInfo, logout }
 })

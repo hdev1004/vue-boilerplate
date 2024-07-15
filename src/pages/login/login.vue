@@ -47,6 +47,7 @@ const login = async () => {
       loginId: id.value,
       password: pw.value
     })
+    if (data === null) return
     console.log('DATA : ', data)
     const token = data.headers.token
     setWithExpire(token, 5)
@@ -56,6 +57,7 @@ const login = async () => {
 
     try {
       memberInfo = await AxiosInstance.get(`/api/user-service/members/${memberSub}`)
+      if (memberInfo === null) return
       success(`${memberInfo.data.memberName} 님 안녕하세요. 🤗`)
     } catch (err) {
       error('오류가 발생했습니다.')

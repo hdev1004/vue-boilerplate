@@ -23,9 +23,11 @@ const clickHeart = async () => {
   try {
     if (item.value.isFavor) {
       let data = await AxiosInstance.delete(`/api/product-service/products/${productId}/favorite`)
+      if (data === null) return
       item.value.isFavor = false
     } else {
       let data = await AxiosInstance.post(`/api/product-service/products/${productId}/favorite`)
+      if (data === null) return
       item.value.isFavor = true
     }
   } catch (err: any) {
@@ -34,16 +36,20 @@ const clickHeart = async () => {
   }
 }
 const loading = async () => {
+  spinning.value = true
   const productId = route.query.id
   let res = null
 
   try {
     res = await AxiosInstance.get(`/api/product-service/products/${productId}`)
+    if (res === null) return
     item.value = res.data
 
     res = await AxiosInstance.get(`/api/product-service/products/${productId}/inquires`)
+    if (res === null) return
     inquiry.value = res.data.inquires
     console.log(inquiry.value)
+    spinning.value = false
   } catch (err: any) {
     console.log('Error : ', err)
   }
@@ -54,13 +60,20 @@ loading()
 const inquiryClick = async () => {
   const productId = route.query.id
   let res = null
+
+  if (inquiry_input.value.trim() === '') return
   try {
     res = await AxiosInstance.post(`/api/product-service/products/${productId}/inquires`, {
       content: inquiry_input.value
     })
+    if (res === null) return
+
     success('문의가 작성되었습니다.')
 
     res = await AxiosInstance.get(`/api/product-service/products/${productId}/inquires`)
+    if (res === null) return
+
+    inquiry_input.value = ''
     inquiry.value = res.data.inquires
     console.log(inquiry.value)
   } catch (err: any) {
@@ -105,7 +118,7 @@ const up = () => {
 
 <template>
   <section class="item_container">
-    <a-spin :spinning="item">
+    <a-spin :spinning="spinning">
       <div class="item_divistion">
         <div class="item_description">
           <img
