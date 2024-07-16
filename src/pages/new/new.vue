@@ -4,7 +4,7 @@ import HomeItems from '@/components/Home/HomeItems.vue'
 
 <template>
   <section class="new_container">
-    <HomeItems title="신상품" />
+    <HomeItems title="신상품" tab="new" />
   </section>
 </template>
 

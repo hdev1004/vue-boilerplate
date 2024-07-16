@@ -4,7 +4,7 @@ import HomeItems from '@/components/Home/HomeItems.vue'
 
 <template>
   <section class="best_container">
-    <HomeItems title="위클리 베스트" />
+    <HomeItems title="위클리 베스트" tab="best" />
   </section>
 </template>
 

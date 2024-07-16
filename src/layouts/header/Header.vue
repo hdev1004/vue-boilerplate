@@ -3,17 +3,34 @@ import { useRouter } from 'vue-router'
 import Cookies from 'js-cookie'
 import { ref } from 'vue'
 import { useLoginCheckStore } from '@/stores/loginCheck'
+import { useSearchModalStore } from '@/stores/searchCheck'
 const scrollY = ref(window.scrollY)
+
+const searchModalStore = useSearchModalStore()
 
 const isTop = ref(window.scrollY === 0 ? true : false)
 const userHover = ref(false)
 const shopHover = ref(false)
-const searchClick = ref(false)
+const searchInput = ref('')
 
 const router = useRouter()
 let isMobileMenuOpen = ref(false)
 
+const searchAndMove = () => {
+  let keyword = searchInput.value
+  router.push(`/search?keyword=${keyword}`)
+  searchInput.value = ''
+  isMobileMenuOpen.value = false
+}
+
 const loginCheckStore = useLoginCheckStore()
+
+const inputEnter = (e: any) => {
+  if (e.key === 'Enter') {
+    searchAndMove()
+    searchModalStore.isSearchModal = false
+  }
+}
 
 const logout = () => {
   if (confirm('로그아웃 하시겠습니까?')) {
@@ -25,7 +42,7 @@ const logout = () => {
 }
 
 const search = () => {
-  searchClick.value = !searchClick.value
+  searchModalStore.changeModal(!searchModalStore.isSearchModal)
 }
 
 const moveMenu = (link: string) => {
@@ -79,15 +96,51 @@ onBeforeUnmount(() => {
       <div class="logo" @click="moveHome">글루따띠온</div>
 
       <div class="menu_container">
-        <div class="menu" @click="$router.push('/best')">BEST</div>
-        <div class="menu" @click="$router.push('/new')">NEW</div>
-        <div class="menu" @click="$router.push('/category')">CATEGORY</div>
+        <div
+          class="menu"
+          @click="$router.push('/best')"
+          @mouseenter="searchModalStore.isSearchModal = false"
+        >
+          BEST
+        </div>
+        <div
+          class="menu"
+          @click="$router.push('/new')"
+          @mouseenter="searchModalStore.isSearchModal = false"
+        >
+          NEW
+        </div>
+        <div
+          class="menu"
+          @click="$router.push('/category')"
+          @mouseenter="searchModalStore.isSearchModal = false"
+        >
+          CATEGORY
+        </div>
       </div>
 
       <div class="icon_container">
-        <div :class="`search_container tablet_search_container_${searchClick}`">
-          <input class="search_input" placeholder="search..." />
-          <img class="search_img" src="@/assets/images/header/search.png" />
+        <div
+          @click="searchModalStore.isSearchModal = false"
+          :class="`${
+            searchModalStore.isSearchModal ? 'search_background' : 'search_background_hide'
+          }`"
+        ></div>
+        <div :class="`search_container tablet_search_container_${searchModalStore.isSearchModal}`">
+          <div class="search_help">고객님 무엇을 찾으시나요?</div>
+          <div class="search_input_container">
+            <input
+              class="search_input"
+              placeholder="검색"
+              v-model="searchInput"
+              @keypress="inputEnter"
+            />
+            <img
+              class="search_img"
+              src="@/assets/images/header/search.png"
+              @click="searchAndMove()"
+            />
+          </div>
         </div>
         <img src="@/assets/images/header/search.png" @click="search" />
         <div @mouseleave="userHover = false">
@@ -121,7 +174,11 @@ onBeforeUnmount(() => {
       </div>
 
       <div class="mobile_menu">
-        <img src="@/assets/images/header/menu.png" @click="isMobileMenuOpen = true" />
+        <img
+          class="menu_img"
+          src="@/assets/images/header/menu.png"
+          @click="isMobileMenuOpen = true"
+        />
         <div
           :class="`mobile_menu_background menu_background_${isMobileMenuOpen}`"
           @click="isMobileMenuOpen = false"
@@ -165,6 +222,13 @@ onBeforeUnmount(() => {
             <div @click="moveMenu('/best')">Best</div>
             <div @click="moveMenu('/new')">New</div>
             <div @click="moveMenu('/category')">Category</div>
+          </div>
+
+          <div class="mobile_menu_shop">Search</div>
+          <div class="mobile_search_help">찾으시는 상품이 있으신가요?</div>
+          <div class="mobile_search">
+            <input v-model="searchInput" />
+            <img src="@/assets/images/header/search.png" @click="searchAndMove" />
           </div>
         </div>
       </div>

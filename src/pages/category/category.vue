@@ -4,7 +4,7 @@ import HomeItems from '@/components/Home/HomeItems.vue'
 
 <template>
   <section class="category_container">
-    <HomeItems title="스타일별 코디" />
+    <HomeItems title="스타일별 코디" tab="category" />
   </section>
 </template>
 

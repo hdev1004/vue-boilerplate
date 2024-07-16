@@ -16,6 +16,7 @@ declare module 'vue' {
     HomeItems: typeof import('./src/components/Home/HomeItems.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SearchItems: typeof import('./src/components/Home/SearchItems.vue')['default']
     Task: typeof import('./src/components/Task.vue')['default']
   }
 }

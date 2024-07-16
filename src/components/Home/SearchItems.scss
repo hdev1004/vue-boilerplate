@@ -1,25 +1,4 @@
 .homeitems_container {
-  margin-bottom: 100px;
-}
-
-.homeitems_styles {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  margin-bottom: 30px;
-  gap: 20px;
-
-  .homeitems_styles_item {
-    transition: 0.3s;
-    cursor: pointer;
-    border: 1px solid lightgray;
-    padding: 20px;
-  }
-
-  .homeitems_styles_item_select {
-    background-color: #05153b;
-    color: white;
-  }
 }
 
 .homeitems_logo {
