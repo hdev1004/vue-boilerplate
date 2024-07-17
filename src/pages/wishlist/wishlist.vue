@@ -1,8 +1,44 @@
 <script setup lang="ts">
+import AxiosInstance from '@/axios/axiosInstance'
+import { error, success } from '@/utils/vueAlert'
 import Cookies from 'js-cookie'
 
 const memberString = Cookies.get('member')
 const member = memberString ? JSON.parse(memberString) : ''
+const itemList = ref<Array<any>>([])
+const router = useRouter()
+
+const itemClick = (itemId: number) => {
+  router.push(`/item?id=${itemId}`)
+}
+
+const closeClick = async (itemId: number) => {
+  try {
+    let data = await AxiosInstance.delete(`/api/product-service/products/${itemId}/favorite`)
+    if (data === null) return
+    success('위시리스트에서 제외되었습니다.')
+    getItmeList()
+  } catch (err: any) {
+    error('오류가 발생했습니다')
+    console.log(err)
+  }
+}
+
+const getItmeList = async () => {
+  try {
+    let data = await AxiosInstance.get(
+      '/api/product-service/members/products/favorites?page=1&size=20'
+    )
+    if (data === null) return
+    itemList.value = data.data
+    console.log(itemList.value)
+  } catch (err: any) {
+    error('데이터 불러오는도중 오류가 발생했습니다.')
+    console.log(err)
+  }
+}
+
+getItmeList()
 </script>
 
 <template>
@@ -14,11 +50,17 @@ const member = memberString ? JSON.parse(memberString) : ''
     </div>
 
     <div class="wishlist_cards">
-      <div class="wishlist_card" v-for="num in [1, 2, 3, 4, 5, 6, 7, 8]" v-bind:key="num">
-        <img class="wishlist_image" src="@/assets/images/main/clothes2.jpg" alt="이미지" />
-        <div class="wishlist_title">제품 이름</div>
-        <div class="wishlist_subtitle">제품 상세 설명</div>
-        <div class="wishlist_delete_container">
+      <div class="wishlist_card" v-for="(item, index) in itemList" v-bind:key="`item${index}`">
+        <img
+          class="wishlist_image"
+          src="@/assets/images/main/clothes2.jpg"
+          alt="이미지"
+          @click="itemClick(item.productId)"
+        />
+        <div class="wishlist_title">{{ item.name }}</div>
+        <div class="wishlist_subtitle">{{ item.description }}</div>
+        <div class="wishlist_price">{{ item.unitPrice.toLocaleString() }}</div>
+        <div class="wishlist_delete_container" @click="closeClick(item.productId)">
           <img class="wishlist_delete" src="@/assets/images/header/closeWhite.png" alt="쓰레기통" />
         </div>
       </div>

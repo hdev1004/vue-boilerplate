@@ -2,11 +2,12 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  width: 100%;
+  overflow: hidden;
 }
 .item_card_container {
   display: flex;
   flex-direction: column;
-  gap: 20px;
   width: 100vw;
   align-items: center;
 }
@@ -51,14 +52,41 @@
   }
 }
 
+.item_coupon {
+  position: absolute;
+  top: 150px;
+  right: 10px;
+}
+.item_quantity {
+  display: flex;
+  margin-top: 30px;
+
+  div {
+    width: 25px;
+    height: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 15px;
+  }
+
+  .item_minus {
+    background-color: lightgray;
+  }
+
+  .item_number {
+  }
+
+  .item_plus {
+    color: white;
+    background-color: #828282;
+  }
+}
+
 .item_title {
-  font-size: 20px;
-  overflow: hidden; // 을 사용해 영역을 감출 것
-  text-overflow: ellipsis; // 로 ... 을 만들기
-  white-space: nowrap; // 아래줄로 내려가는 것을 막기위해
-  word-break: break-all;
-  width: 380px;
+  font-size: 17px;
   height: 20px;
+  margin-bottom: 25px;
 }
 
 .item_price {
@@ -84,11 +112,9 @@
 }
 
 .item_checkbox {
-  width: 30px;
-  height: 30px;
-
   position: absolute;
-  right: 0px;
+  left: -80px;
+  top: 80px;
 }
 
 .item_batch_btn {
@@ -104,13 +130,9 @@
     cursor: pointer;
     padding: 10px;
     flex: 1;
-    border-radius: 5px;
-    background: #f6f4ee;
-    color: rgb(70, 70, 70);
+    background: #05153b;
+    color: white;
     margin-top: 50px;
-  }
-  div:hover {
-    background-color: #cfc8b1;
   }
 }
 
@@ -144,17 +166,12 @@
 
   div {
     transition: 0.3s;
-    border-radius: 5px;
     flex: 1;
     padding: 10px;
     text-align: center;
     cursor: pointer;
-    background-color: #f6f4ee;
-    color: rgb(70, 70, 70);
-  }
-
-  div:hover {
-    background-color: #cfc8b1;
+    background: #05153b;
+    color: white;
   }
 }
 
@@ -176,7 +193,6 @@
 
   .item_card {
     display: flex !important;
-    flex-direction: column !important;
   }
 
   .item_batch_btn {
@@ -194,14 +210,14 @@
     width: 80vw;
     box-shadow: 0px 0px 3px lightgray;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
   }
 
   .item_title {
-    width: 100%;
   }
 
   .item_card_container {
+    gap: 70px;
     position: relative;
   }
   .item_delete {
@@ -226,13 +242,15 @@
     width: 90%;
   }
 
-  .item_images_container {
-    width: 100% !important;
-    object-fit: cover !important;
+  .item_des {
+  }
 
+  .item_images_container {
+    min-width: 100px;
+    width: 100px;
     .item_image {
-      width: 100%;
-      height: auto;
+      min-width: 100px;
+      width: 100px;
     }
   }
 
@@ -242,8 +260,7 @@
 
     position: absolute;
     left: 0px;
-    top: 0px;
+    top: -50px;
     margin-top: -4px;
-    margin-left: 4px;
   }
 }
