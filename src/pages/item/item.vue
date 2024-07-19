@@ -3,6 +3,7 @@ import AxiosInstance from '@/axios/axiosInstance'
 import { success, error } from '@/utils/vueAlert'
 import Cookies from 'js-cookie'
 
+const isNone = ref(false)
 const quantity = ref(1)
 const isUp = ref(false)
 const preScrollTop = ref(0)
@@ -78,6 +79,22 @@ const clickHeart = async () => {
     console.log(err)
   }
 }
+
+const clickCart = async () => {
+  let id = route.query.id
+  try {
+    let data = await AxiosInstance.post('/api/order-service/carts', {
+      productId: id,
+      quantity: quantity.value
+    })
+    if (data === null) return
+    success('장바구니에 담겼습니다.')
+  } catch (err: any) {
+    error('오류가 발생했습니다.')
+    console.log(err)
+  }
+}
+
 const loading = async () => {
   spinning.value = true
   const productId = route.query.id
@@ -94,6 +111,9 @@ const loading = async () => {
     console.log(inquiry.value)
     spinning.value = false
   } catch (err: any) {
+    error('존재하지 않는 상품 입니다.')
+    spinning.value = false
+    isNone.value = true
     console.log('Error : ', err)
   }
 }
@@ -162,7 +182,7 @@ const up = () => {
 <template>
   <section class="item_container">
     <a-spin :spinning="spinning">
-      <div class="item_divistion">
+      <div class="item_divistion" v-if="!isNone">
         <div class="item_description">
           <img
             class="thumbnail_img"
@@ -172,7 +192,11 @@ const up = () => {
 
           <div class="inquiry">
             <div class="inquiry_register">
-              <textarea placeholder="문의 내용을 작성해주세요" v-model="inquiry_input" />
+              <textarea
+                @focus="isUp = true"
+                placeholder="문의 내용을 작성해주세요"
+                v-model="inquiry_input"
+              />
               <div class="inquiry_btn" @click="inquiryClick">등록</div>
             </div>
 
@@ -220,7 +244,7 @@ const up = () => {
               <img v-if="item.isFavor" src="@/assets/images/header/heartFill.png" />
               <img v-else src="@/assets/images/header/heart.png" />
             </div>
-            <div class="cart">장바구니</div>
+            <div class="cart" @click="clickCart">장바구니</div>
             <div class="buy">바로구매</div>
           </div>
 
@@ -231,6 +255,10 @@ const up = () => {
             </div>
           </div>
         </div>
+      </div>
+      <div v-else class="not_found">
+        <div class="not_found_tit">존재하지 않는 상품입니다</div>
+        <img src="@/assets/images/main/empty.png" class="empty" />
       </div>
     </a-spin>
   </section>

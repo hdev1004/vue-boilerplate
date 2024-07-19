@@ -41,6 +41,7 @@
   }
 
   img {
+    object-fit: cover;
     cursor: pointer;
     transition: 0.3s;
     width: 150px;
@@ -71,6 +72,7 @@
   }
 
   .item_minus {
+    cursor: pointer;
     background-color: lightgray;
   }
 
@@ -78,6 +80,7 @@
   }
 
   .item_plus {
+    cursor: pointer;
     color: white;
     background-color: #828282;
   }

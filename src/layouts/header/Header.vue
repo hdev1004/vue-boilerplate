@@ -117,6 +117,13 @@ onBeforeUnmount(() => {
         >
           CATEGORY
         </div>
+        <div
+          class="menu"
+          @click="$router.push('/coupon')"
+          @mouseenter="searchModalStore.isSearchModal = false"
+        >
+          COUPON
+        </div>
       </div>
 
       <div class="icon_container">
@@ -222,6 +229,7 @@ onBeforeUnmount(() => {
             <div @click="moveMenu('/best')">Best</div>
             <div @click="moveMenu('/new')">New</div>
             <div @click="moveMenu('/category')">Category</div>
+            <div @click="moveMenu('/coupon')">Coupon</div>
           </div>
 
           <div class="mobile_menu_shop">Search</div>

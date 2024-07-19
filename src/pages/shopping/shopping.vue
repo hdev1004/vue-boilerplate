@@ -1,14 +1,35 @@
 <script setup lang="ts">
+import AxiosInstance from '@/axios/axiosInstance'
+import { error, success } from '@/utils/vueAlert'
 import type { SelectProps } from 'ant-design-vue'
-let itemIds = ['item1', 'item2', 'item3', 'item4', 'item5', 'item6']
+let itemList = ref<Array<any>>([])
 let items = ref<{
   [key: string]: boolean
 }>({})
+const sum = ref(0)
+const quantity = ref<Array<number>>([])
 const coupon = ref('')
 
 const handleChange = (value: string) => {
   console.log(`selected ${value}`)
 }
+
+const getItemList = async () => {
+  try {
+    let data = await AxiosInstance.get('/api/order-service/carts')
+    if (data === null) return
+
+    itemList.value = data.data.carts
+    itemList.value.forEach((element) => {
+      quantity.value.push(element.quantity)
+    })
+  } catch (err: any) {
+    error('데이터를 불러오는 중 오류가 발생했습니다.')
+    console.log(err)
+  }
+}
+
+getItemList()
 
 const options = ref<SelectProps['options']>([
   {
@@ -30,18 +51,61 @@ const options = ref<SelectProps['options']>([
   }
 ])
 
-const entireItemClick = () => {
-  if (itemIds.length === Object.keys(items.value).length) {
-    items.value = {}
-  } else {
-    itemIds.forEach((element) => {
-      items.value[element] = true
+const itemMiuse = (index: number) => {
+  if (quantity.value[index] > 1) {
+    quantity.value[index] -= 1
+
+    sum.value = 0
+    itemList.value.forEach((element) => {
+      sum.value += element.product.unitPrice * quantity.value[index]
     })
   }
 }
 
-const itemDelete = (item: string) => {
-  alert(`${item} 삭제`)
+const itemPlus = (index: number) => {
+  if (quantity.value[index] < 101) {
+    quantity.value[index] += 1
+
+    sum.value = 0
+    itemList.value.forEach((element, idx) => {
+      sum.value += element.product.unitPrice * quantity.value[idx]
+    })
+  }
+}
+
+const entireItemClick = () => {
+  if (itemList.value.length === Object.keys(items.value).length) {
+    items.value = {}
+  } else {
+    itemList.value.forEach((element) => {
+      items.value[element.cartId] = true
+    })
+  }
+}
+
+watch(
+  () => itemList.value,
+  () => {
+    sum.value = 0
+    itemList.value.forEach((element) => {
+      sum.value += element.product.unitPrice * element.quantity
+    })
+  }
+)
+
+const itemDelete = async (item: any) => {
+  if (window.confirm('선택한 상품을 삭제하시겠습니까?')) {
+    try {
+      let data = await AxiosInstance.delete(`/api/order-service/carts/${item.cartId}`)
+      if (data === null) return
+
+      success('선택한 상품이 삭제되었습니다.')
+      getItemList()
+    } catch (err: any) {
+      error('오류가 발생했습니다.')
+      console.log('err : ', err)
+    }
+  }
 }
 
 const selectDelete = () => {
@@ -69,18 +133,21 @@ const itemCheckbox = (item: string) => {
   <section class="shopping_container">
     <div class="shopping_logo">장바구니</div>
     <div class="item_card_container">
-      <div v-for="item in itemIds" v-bind:key="item" class="item_card" :id="item">
+      <div v-for="(item, index) in itemList" v-bind:key="item" class="item_card" :id="item">
         <div class="item_contents">
           <div class="item_images_container">
-            <img class="item_image" src="@/assets/images/main/clothes1.jpg" />
+            <img
+              class="item_image"
+              :src="`/api/product-service/products/images/${item.product.thumbnailImageId}`"
+            />
           </div>
           <div class="item_des">
-            <div class="item_title">[코튼스판] 골지크롭 반팔티셔츠</div>
-            <div class="item_price">15,000원</div>
+            <div class="item_title">{{ item.product.name }}</div>
+            <div class="item_price">{{ item.product.unitPrice.toLocaleString() }}원</div>
             <div class="item_quantity">
-              <div class="item_minus">-</div>
-              <div class="item_number">1</div>
-              <div class="item_plus">+</div>
+              <div class="item_minus" @click="itemMiuse(index)">-</div>
+              <div class="item_number">{{ quantity[index] }}</div>
+              <div class="item_plus" @click="itemPlus(index)">+</div>
             </div>
 
             <div class="item_coupon">
@@ -98,8 +165,8 @@ const itemCheckbox = (item: string) => {
           </div>
           <a-checkbox
             class="item_checkbox"
-            :checked="items[item]"
-            @change="itemCheckbox(item)"
+            :checked="items[item.cartId]"
+            @change="itemCheckbox(item.cartId)"
           ></a-checkbox>
         </div>
       </div>
@@ -112,7 +179,7 @@ const itemCheckbox = (item: string) => {
 
     <div class="item_cashier">
       <div>총 상품금액</div>
-      <div>65,700원</div>
+      <div>{{ sum }}원</div>
     </div>
 
     <div class="item_cashier_container">

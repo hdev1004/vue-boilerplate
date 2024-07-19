@@ -31,6 +31,7 @@ let itemList = ref<
     quantity: number
     unitPrice: number
     favorCount: number
+    inquireCount: number
     isFavor: Boolean
   }>
 >([])
@@ -132,7 +133,7 @@ getItemList()
             <div class="homeitems_rank">{{ index + 1 }}</div>
             <div class="homeitems_title">{{ item.name }}</div>
             <div class="homeitems_price">{{ item.unitPrice.toLocaleString() }}</div>
-            <div class="homeitems_review">문의 {{ 0 }}건</div>
+            <div class="homeitems_review">문의 {{ item.inquireCount }}건</div>
             <div class="homeitems_heart" @click="clickHeart(item.productId, item.isFavor)">
               <img v-if="item.isFavor" src="@/assets/images/header/heartFill.png" />
               <img v-else src="@/assets/images/header/heart.png" />
