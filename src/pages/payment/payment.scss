@@ -1,0 +1,173 @@
+.payment_container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.payment_logo {
+  text-align: center;
+  height: 55px;
+  line-height: 55px;
+  font-size: 30px;
+  font-family: 'HSSanTokki20-Regular';
+  color: #5c5b5a;
+  margin-top: 130px;
+}
+
+.payment_body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.payment_line {
+  margin-top: 60px;
+  background-color: rgba(211, 211, 211, 0.486);
+  height: 10px;
+  width: 90%;
+  max-width: 700px;
+}
+
+.payment_card {
+  background-color: white;
+  width: 90%;
+  max-width: 700px;
+}
+
+.payment_order {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.payment_title {
+  font-weight: bold;
+  margin-top: 50px;
+  margin-bottom: 30px;
+  font-size: 20px;
+}
+.payment_order_row {
+  display: flex;
+  height: 40px;
+  line-height: 40px;
+
+  input {
+    box-sizing: border-box;
+    width: 100%;
+    outline: none;
+    border: 1px solid lightgray;
+    transition: 0.3s;
+    border-radius: 5px;
+    padding-left: 10px;
+
+    &:focus {
+      border: 1px solid black;
+    }
+  }
+
+  .div {
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+
+  .payment_order_row_title {
+    font-size: 17px;
+    min-width: 100px;
+  }
+}
+.payment_order_select {
+  margin-bottom: 15px;
+}
+
+.payment_order_address {
+  gap: 10px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  input {
+    height: 40px;
+  }
+}
+
+.payment_order_addres_search {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  input {
+    width: 150px;
+  }
+
+  div {
+    width: 150px;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 13px;
+    background-color: #05153b;
+  }
+}
+
+.payment_phone_select {
+  height: 40px;
+  width: 100%;
+  min-height: 40px;
+}
+
+.payment_item {
+  position: relative;
+  display: flex;
+  margin-bottom: 50px;
+  .payment_item_image {
+    width: 80px;
+  }
+  .payment_item_contents {
+    margin-left: 15px;
+    .payment_item_title {
+      font-weight: bold;
+    }
+
+    .payment_item_quantity {
+      margin-top: 20px;
+    }
+
+    .payment_item_price {
+      margin-top: 40px;
+    }
+
+    .payment_item_close {
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      width: 20px;
+      height: 20px;
+      background-color: #f16f6f;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      img {
+        width: 10px;
+        height: 10px;
+      }
+    }
+  }
+}
+
+.payment_last {
+  width: 90%;
+  max-width: 700px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 50px;
+  background-color: #05153b;
+  color: white;
+}

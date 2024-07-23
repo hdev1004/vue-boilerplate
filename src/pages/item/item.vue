@@ -9,6 +9,7 @@ const isUp = ref(false)
 const preScrollTop = ref(0)
 const item = ref<any>({})
 const route = useRoute()
+const router = useRouter()
 const thumbnailImage = ref('')
 const htmlRef = ref(null)
 const spinning = ref(false)
@@ -93,6 +94,10 @@ const clickCart = async () => {
     error('오류가 발생했습니다.')
     console.log(err)
   }
+}
+
+const clickPayment = async () => {
+  router.push('/payment')
 }
 
 const loading = async () => {
@@ -245,7 +250,7 @@ const up = () => {
               <img v-else src="@/assets/images/header/heart.png" />
             </div>
             <div class="cart" @click="clickCart">장바구니</div>
-            <div class="buy">바로구매</div>
+            <div class="buy" @click="clickPayment">바로구매</div>
           </div>
 
           <div class="total">
