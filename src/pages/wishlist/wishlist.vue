@@ -53,7 +53,7 @@ getItmeList()
       <div class="wishlist_card" v-for="(item, index) in itemList" v-bind:key="`item${index}`">
         <img
           class="wishlist_image"
-          src="@/assets/images/main/clothes2.jpg"
+          :src="`/api/product-service/products/images/${item.thumbnailImageId}`"
           alt="이미지"
           @click="itemClick(item.productId)"
         />
