@@ -76,72 +76,84 @@ const updateCheck = async () => {
           정보수정
         </div>
         <div
-          :class="`mypage_menu ${menuType === '회원탈퇴' ? 'mypage_menu_active' : ''}`"
-          @click="menuType = '회원탈퇴'"
+          :class="`mypage_menu ${menuType === '결제내역' ? 'mypage_menu_active' : ''}`"
+          @click="menuType = '결제내역'"
         >
-          회원탈퇴
+          결제내역
+        </div>
+        <div
+          :class="`mypage_menu ${menuType === '쿠폰리스트' ? 'mypage_menu_active' : ''}`"
+          @click="menuType = '쿠폰리스트'"
+        >
+          쿠폰리스트
         </div>
       </div>
 
       <div class="register_table" v-if="menuType === '정보수정'">
-        <div class="register_row">
-          <div>아이디 <span>*</span></div>
-          <div class="register_input">
-            <input
-              disabled="true"
-              spellcheck="false"
-              :class="errorType === '아이디' ? 'input_error' : ''"
-              v-model="loginId"
-              placeholder="아이디를 입력하세요"
-            />
-          </div>
-          <div class="register_sub">아이디를 입력해 주세요. (영문소문자/숫자, 4~16자).</div>
-        </div>
+        <div class="payment_body">
+          <div class="payment_card">
+            <div class="payment_title">회원 정보</div>
+            <div class="payment_order">
+              <div class="payment_order_row">
+                <div class="payment_order_row_title">아이디 *</div>
+                <input placeholder="아이디를 입력하세요" v-model="loginId" disabled />
+              </div>
 
-        <div class="register_row">
-          <div>비밀번호 <span>*</span></div>
-          <div class="register_input">
-            <input
-              type="password"
-              :class="errorType === '비밀번호' ? 'input_error' : ''"
-              v-model="password"
-              placeholder="비밀번호를 입력하세요"
-            />
-          </div>
-          <div class="register_sub">(영문 대소문자/숫자/특수문자 중 2가지 이상 조합, 8자~16자)</div>
-        </div>
+              <div class="payment_order_row">
+                <div class="payment_order_row_title">비밀번호 *</div>
+                <input placeholder="비밀번호를 입력하세요" type="password" v-model="password" />
+              </div>
 
-        <div class="register_row">
-          <div>비밀번호 확인 <span>*</span></div>
-          <div class="register_input">
-            <input
-              type="password"
-              :class="errorType === '비밀번호확인' ? 'input_error' : ''"
-              v-model="rePassword"
-              placeholder="비밀번호를 입력하세요"
-            />
+              <div class="payment_order_row">
+                <div class="payment_order_row_title">비빌번호 확인 *</div>
+                <input
+                  placeholder="비밀번호를 다시 입력하세요"
+                  type="password"
+                  v-model="rePassword"
+                />
+              </div>
+              <div class="payment_order_row">
+                <div class="payment_order_row_title">성함 *</div>
+                <input placeholder="성함을 입력하세요" v-model="memberName" />
+              </div>
+              <div class="payment_order_row">
+                <div class="payment_order_row_title">휴대전화 *</div>
+                <a-select :options="options" class="payment_phone_select" size="large"></a-select>
+                <div class="div">-</div>
+                <input />
+                <div class="div">-</div>
+                <input />
+              </div>
+              <div class="payment_order_row">
+                <div class="payment_order_row_title">이메일</div>
+                <input />
+                <div class="div">@</div>
+                <input />
+              </div>
+            </div>
           </div>
-          <div class="register_sub"></div>
-        </div>
 
-        <div class="register_row">
-          <div>이름 <span>*</span></div>
-          <div class="register_input">
-            <input
-              spellcheck="false"
-              :class="errorType === '사용자이름' ? 'input_error' : ''"
-              v-model="memberName"
-              placeholder="이름을 입력하세요"
-            />
+          <div class="payment_line"></div>
+
+          <div class="payment_card">
+            <div class="payment_title">배송지</div>
+            <div class="payment_order_select"></div>
+            <div class="payment_order">
+              <div class="payment_order_row" style="height: auto !important; line-height: normal">
+                <div class="payment_order_row_title">주소 *</div>
+                <div class="payment_order_address">
+                  <div class="payment_order_addres_search">
+                    <input placeholder="우편번호" />
+                    <div>주소검색</div>
+                  </div>
+                  <input placeholder="기본주소" />
+                  <input placeholder="상세주소" />
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="register_sub"></div>
         </div>
         <div class="register_btn" @click="updateCheck">수정하기</div>
-      </div>
-      <div v-if="menuType === '회원탈퇴'" class="delete_container">
-        <div>정말로 탈퇴하시겠습니까? 🥹</div>
-        <div>탈퇴 시 정보가 삭제 됩니다.</div>
-
         <div class="delete_btn" @click="withdraw">회원탈퇴</div>
       </div>
     </div>
@@ -150,4 +162,5 @@ const updateCheck = async () => {
 
 <style lang="scss" scoped>
 @import url('./mypage.scss');
+@import url('../payment/payment.scss');
 </style>

@@ -24,7 +24,7 @@
 .payment_line {
   margin-top: 60px;
   background-color: rgba(211, 211, 211, 0.486);
-  height: 10px;
+  height: 3px;
   width: 90%;
   max-width: 700px;
 }
@@ -73,7 +73,7 @@
 
   .payment_order_row_title {
     font-size: 17px;
-    min-width: 100px;
+    min-width: 120px;
   }
 }
 .payment_order_select {
@@ -170,4 +170,33 @@
   margin-bottom: 50px;
   background-color: #05153b;
   color: white;
+}
+
+@media screen and (min-width: 1024px) {
+  /* Desktop */
+}
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+  /* Tablet */
+}
+@media screen and (max-width: 767px) {
+  .payment_order_address {
+    input {
+      width: 200px;
+    }
+  }
+  .payment_order_row_title {
+    font-size: 13px !important;
+    min-width: 90px !important;
+  }
+
+  .payment_order_addres_search {
+    div {
+      width: 70px;
+      font-size: 13px !important;
+    }
+    input {
+      min-width: 120px;
+      width: 120px;
+    }
+  }
 }

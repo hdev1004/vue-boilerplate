@@ -1,5 +1,5 @@
 .mypage_container {
-  width: 1000px;
+  width: 80%;
   display: flex;
   flex-direction: column;
 
@@ -30,6 +30,7 @@
 }
 
 .register_table {
+  width: 100%;
   .register_row {
     display: flex;
     flex-direction: row;
@@ -43,17 +44,6 @@
     }
 
     .register_input {
-      width: 300px;
-    }
-    input {
-      box-sizing: border-box;
-      height: 45px;
-      padding-left: 10px;
-      outline: none;
-      border: 1px solid lightgray;
-      margin-left: 20px;
-      width: 100%;
-      transition: 0.2s;
     }
     .input_error {
       border: 1px solid rgb(250, 145, 138);
@@ -78,16 +68,19 @@
   cursor: pointer;
   width: 200px;
   text-align: center;
+  margin-bottom: 20px;
   height: 45px;
   line-height: 45px;
   margin-left: auto;
   margin-right: auto;
   margin-top: 50px;
   color: white;
-  background-color: #655345;
+  background-color: #05153b;
 }
 
 .mypage_menu_group {
+  display: flex;
+  align-items: start;
 }
 
 .mypage_description {
@@ -98,27 +91,45 @@
 
 .mypage_menu_tabs {
   display: flex;
+  flex-direction: column;
   margin-right: 15px;
   text-align: center;
   justify-content: center;
-  margin-top: -20px;
+  margin-top: 50px;
   margin-bottom: 30px;
-  gap: 20px;
 
   .mypage_menu {
+    width: 150px;
     transition: 0.2s;
     cursor: pointer;
-    padding: 8px;
-    width: 150px;
-    border-radius: 25px;
-    color: #555654;
-    box-shadow: 0px 0px 3px lightgray;
+    padding: 20px;
+    color: #05153b;
+    border-bottom: 1px solid lightgray;
+    border-left: 1px solid lightgray;
+    border-right: 1px solid lightgray;
+
+    &:nth-child(1) {
+      border-top: 1px solid lightgray;
+    }
   }
 
   .mypage_menu_active {
-    background-color: #eae5dd;
-    box-shadow: 0px 0px 1px lightgray;
+    color: white;
+    background-color: #05153b;
   }
+}
+
+.delete_btn {
+  cursor: pointer;
+  width: 200px;
+  text-align: center;
+  height: 45px;
+  line-height: 45px;
+  margin-left: auto;
+  margin-bottom: 50px;
+  margin-right: auto;
+  color: white;
+  background-color: #05153b;
 }
 
 .delete_container {
@@ -146,7 +157,7 @@
     margin-right: auto;
     margin-top: 50px;
     color: white;
-    background-color: #655345;
+    background-color: #05153b;
   }
 }
 
@@ -163,13 +174,33 @@
     display: none;
   }
 }
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 1023px) {
   /* Tablet */
   .mypage_container,
   .delete_container {
-    width: 480px;
+    width: 100vw;
   }
   .register_sub {
     display: none;
+  }
+
+  .register_table {
+    overflow: hidden;
+    width: 100vw;
+  }
+
+  .mypage_menu_group {
+    width: 100vw;
+    flex-direction: column !important;
+  }
+  .mypage_menu_tabs {
+    width: 100vw;
+    font-size: 14px;
+    display: flex;
+    flex-direction: row !important;
+
+    div {
+      flex: 1;
+    }
   }
 }

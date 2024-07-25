@@ -2,7 +2,11 @@
 import { error, success, warning } from '@/utils/vueAlert'
 import RegisterModal from './registerModal.vue'
 import axiosInstance from '@/axios/axiosInstance'
+import type { SelectProps } from 'ant-design-vue'
+import AxiosInstance from '@/axios/axiosInstance'
 
+const isIdCheckClick = ref(false)
+const isIdDup = ref(false)
 const isModal = ref(false)
 const loginId = ref('')
 const password = ref('')
@@ -15,9 +19,46 @@ const sub = ref('회원정보는 가입 후 변경할 수 있습니다.')
 const router = useRouter()
 const isError = ref(false)
 
+warning('회원가입 기능 변경 중 입니다.')
+warning('테스트 계정으로 로그인 부탁드립니다 .🥹')
+const options = ref<SelectProps['options']>([
+  {
+    value: '010',
+    label: '010'
+  },
+  {
+    value: '011',
+    label: '011'
+  },
+  {
+    value: '016',
+    label: '016'
+  },
+  {
+    value: '017',
+    label: '017'
+  },
+  {
+    value: '018',
+    label: '018'
+  },
+  {
+    value: '019',
+    label: '019'
+  }
+])
+
 const registerCheck = () => {
-  isModal.value = true
-  isError.value = false
+  if (isIdCheckClick.value === false) {
+    warning('아이디 중복 확인을 클릭해주세요.')
+    return
+  }
+
+  if (isIdDup.value) {
+    warning('아이디가 중복되었습니다')
+    return
+  }
+
   if (loginId.value.trim() === '') {
     errorType.value = '아이디'
     type.value = '오류'
@@ -55,9 +96,42 @@ const registerCheck = () => {
   }
   errorType.value = 'none'
 
+  isModal.value = true
+  isError.value = false
   type.value = '회원가입'
   title.value = '회원가입을 진행하시겠습니까?'
   sub.value = '회원정보는 가입 후 변경할 수 있습니다.'
+}
+
+const idDupCheck = async () => {
+  //아이디 중복 체크
+  let id = loginId.value
+
+  if (id.trim() === '') {
+    warning('아이디를 입력해주세요')
+    return
+  }
+
+  if (id.length <= 5) {
+    warning('아이디는 6글자 이상 입력해주세요')
+    return
+  }
+
+  try {
+    let data = await AxiosInstance.get(`/api/user-service/members/loginId?loginId=${id}`)
+    isIdDup.value = data.data.duplicate
+
+    if (isIdDup.value) {
+      warning('이미 사용되고 있는 아이디 입니다.')
+      isIdCheckClick.value = false
+    } else {
+      isIdCheckClick.value = true
+      success('사용할 수 있는 아이디 입니다.')
+    }
+  } catch (err: any) {
+    console.log(err)
+    error('관리자에게 문의해주세요')
+  }
 }
 
 //회원가입 함수
@@ -67,6 +141,16 @@ const register = async () => {
     isModal.value = false
     return
   }
+
+  if (isIdCheckClick.value === false) {
+    warning('아이디 중복체크를 클릭해주세요.')
+    return
+  }
+  if (isIdDup.value) {
+    warning('이미 사용되고 있는 아이디 입니다.')
+    return
+  }
+
   try {
     data = await axiosInstance.post('/api/user-service/members', {
       loginId: loginId.value,
@@ -89,64 +173,75 @@ const register = async () => {
 const close = () => {
   isModal.value = false
 }
+//loginId, password, rePassword,memberName
 </script>
 
 <template>
   <section class="register">
     <div class="title">회원가입</div>
 
-    <div class="table_scription"><span>*</span> 필수입력사항</div>
-    <div class="register_table">
-      <div class="register_row">
-        <div>아이디 <span>*</span></div>
-        <div class="register_input">
-          <input
-            spellcheck="false"
-            :class="errorType === '아이디' ? 'input_error' : ''"
-            v-model="loginId"
-            placeholder="아이디를 입력하세요"
-          />
+    <div class="payment_body">
+      <div class="payment_card">
+        <div class="payment_title">회원 정보</div>
+        <div class="payment_order">
+          <div class="payment_order_row">
+            <div class="payment_order_row_title">아이디 *</div>
+            <input
+              placeholder="아이디를 입력하세요"
+              v-model="loginId"
+              @keypress="isIdCheckClick = false"
+            />
+            <div class="register_id_check" @click="idDupCheck">아이디 중복 확인</div>
+          </div>
+
+          <div class="payment_order_row">
+            <div class="payment_order_row_title">비밀번호 *</div>
+            <input placeholder="비밀번호를 입력하세요" type="password" v-model="password" />
+          </div>
+
+          <div class="payment_order_row">
+            <div class="payment_order_row_title">비빌번호 확인 *</div>
+            <input placeholder="비밀번호를 다시 입력하세요" type="password" v-model="rePassword" />
+          </div>
+          <div class="payment_order_row">
+            <div class="payment_order_row_title">성함 *</div>
+            <input placeholder="성함을 입력하세요" v-model="memberName" />
+          </div>
+          <div class="payment_order_row">
+            <div class="payment_order_row_title">휴대전화 *</div>
+            <a-select :options="options" class="payment_phone_select" size="large"></a-select>
+            <div class="div">-</div>
+            <input />
+            <div class="div">-</div>
+            <input />
+          </div>
+          <div class="payment_order_row">
+            <div class="payment_order_row_title">이메일</div>
+            <input />
+            <div class="div">@</div>
+            <input />
+          </div>
         </div>
-        <div class="register_sub">아이디를 입력해 주세요. (영문소문자/숫자, 4~16자).</div>
       </div>
 
-      <div class="register_row">
-        <div>비밀번호 <span>*</span></div>
-        <div class="register_input">
-          <input
-            type="password"
-            :class="errorType === '비밀번호' ? 'input_error' : ''"
-            v-model="password"
-            placeholder="비밀번호를 입력하세요"
-          />
-        </div>
-        <div class="register_sub">(영문 대소문자/숫자/특수문자 중 2가지 이상 조합, 8자~16자)</div>
-      </div>
+      <div class="payment_line"></div>
 
-      <div class="register_row">
-        <div>비밀번호 확인 <span>*</span></div>
-        <div class="register_input">
-          <input
-            type="password"
-            :class="errorType === '비밀번호확인' ? 'input_error' : ''"
-            v-model="rePassword"
-            placeholder="비밀번호를 입력하세요"
-          />
+      <div class="payment_card">
+        <div class="payment_title">배송지</div>
+        <div class="payment_order_select"></div>
+        <div class="payment_order">
+          <div class="payment_order_row" style="height: auto !important; line-height: normal">
+            <div class="payment_order_row_title">주소 *</div>
+            <div class="payment_order_address">
+              <div class="payment_order_addres_search">
+                <input placeholder="우편번호" />
+                <div>주소검색</div>
+              </div>
+              <input placeholder="기본주소" />
+              <input placeholder="상세주소" />
+            </div>
+          </div>
         </div>
-        <div class="register_sub"></div>
-      </div>
-
-      <div class="register_row">
-        <div>이름 <span>*</span></div>
-        <div class="register_input">
-          <input
-            spellcheck="false"
-            :class="errorType === '사용자이름' ? 'input_error' : ''"
-            v-model="memberName"
-            placeholder="이름을 입력하세요"
-          />
-        </div>
-        <div class="register_sub"></div>
       </div>
     </div>
 
@@ -167,4 +262,5 @@ const close = () => {
 
 <style lang="scss" scoped>
 @import url('./register.scss');
+@import url('../payment/payment.scss');
 </style>
