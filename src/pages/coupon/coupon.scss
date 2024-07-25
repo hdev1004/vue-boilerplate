@@ -27,13 +27,31 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    .image_container {
+      width: 250px;
+      height: 250px;
+      box-shadow: 0px 0px 5px lightgray;
+      overflow: hidden;
+    }
     img {
+      transition: 0.3s;
       width: 250px;
       height: 250px;
       object-fit: cover;
+      cursor: pointer;
+
+      &:hover {
+        scale: 1.1;
+      }
     }
 
-    div {
+    .coupon_name {
+      font-weight: 600;
+      font-size: 20px;
+      padding: 20px;
+    }
+    .coupon_btn {
       cursor: pointer;
       display: flex;
       justify-content: center;

@@ -108,8 +108,23 @@ const itemDelete = async (item: any) => {
   }
 }
 
-const selectDelete = () => {
-  alert('선택 삭제')
+const selectDelete = async () => {
+  let data = null
+  if (window.confirm('선택한 상품들을 삭제하시겠습니까?')) {
+    for (const item of Object.keys(items.value)) {
+      try {
+        const data = await AxiosInstance.delete(`/api/order-service/carts/${item}`)
+        if (data === null) return
+
+        // 성공적으로 삭제되었을 때 추가 작업이 있으면 여기서 처리
+      } catch (err: any) {
+        error('오류가 발생했습니다.')
+        console.log('err : ', err)
+      }
+    }
+    success('선택한 상품이 삭제되었습니다.')
+    getItemList()
+  }
 }
 
 const selectOrder = () => {
@@ -179,7 +194,7 @@ const itemCheckbox = (item: string) => {
 
     <div class="item_cashier">
       <div>총 상품금액</div>
-      <div>{{ sum }}원</div>
+      <div>{{ sum.toLocaleString() }}원</div>
     </div>
 
     <div class="item_cashier_container">
