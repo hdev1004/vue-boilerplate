@@ -5,13 +5,13 @@ import { error, success, warning } from '@/utils/vueAlert'
 const couponList = ref<Array<any>>([])
 
 const getCoupon = (item: any) => {
-  warning('개발중인 기능입니다')
-  success(`[임시]'${item.name}' 쿠폰을 받았습니다 🥳`)
+  console.log(item)
+  success(`'${item.name}' 쿠폰을 받았습니다 🥳`)
 }
 
 const getCouponList = async () => {
   try {
-    let data = await AxiosInstance.get('/api/order-service/coupon')
+    let data = await AxiosInstance.get('/api/order-service/coupon?disabled=false')
     if (data === null) return
     couponList.value = data.data.coupons
     console.log(couponList.value)

@@ -102,9 +102,9 @@ const clickPayment = async () => {
     'carts',
     JSON.stringify([
       {
-        productId: route.query.id,
+        product: item.value,
         quantity: quantity.value,
-        carts: null
+        cartId: null
       }
     ]),
     {

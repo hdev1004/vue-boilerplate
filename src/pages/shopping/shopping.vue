@@ -2,6 +2,7 @@
 import AxiosInstance from '@/axios/axiosInstance'
 import { error, success } from '@/utils/vueAlert'
 import type { SelectProps } from 'ant-design-vue'
+import Cookies from 'js-cookie'
 let itemList = ref<Array<any>>([])
 let items = ref<{
   [key: string]: boolean
@@ -9,9 +10,25 @@ let items = ref<{
 const sum = ref(0)
 const quantity = ref<Array<number>>([])
 const coupon = ref('')
+const paymentBody = ref<Array<any>>([])
+const router = useRouter()
+const couponList = ref<Array<any>>([])
+const useCoupon = ref<Array<any>>([])
 
 const handleChange = (value: string) => {
   console.log(`selected ${value}`)
+}
+
+const getCouponList = async () => {
+  try {
+    let data = await AxiosInstance.get('/api/order-service/members/coupon')
+    if (data === null) return
+    couponList.value = data.data.coupons
+    console.log(couponList.value)
+  } catch (err: any) {
+    console.log(err)
+    error('오류가 발생했습니다')
+  }
 }
 
 const getItemList = async () => {
@@ -22,6 +39,7 @@ const getItemList = async () => {
     itemList.value = data.data.carts
     itemList.value.forEach((element) => {
       quantity.value.push(element.quantity)
+      useCoupon.value.push(null)
     })
   } catch (err: any) {
     error('데이터를 불러오는 중 오류가 발생했습니다.')
@@ -30,7 +48,7 @@ const getItemList = async () => {
 }
 
 getItemList()
-
+getCouponList()
 const options = ref<SelectProps['options']>([
   {
     value: '',
@@ -129,16 +147,24 @@ const selectDelete = async () => {
 
 const selectOrder = () => {
   let cartsId = Object.keys(items.value)
+  paymentBody.value = []
   for (let i = 0; i < itemList.value.length; i++) {
     //여기서부터 수정
-    let data = items.value[cartsId[i]]
-    let cartId = cartsId[i]
-    let quan = quantity.value[i]
-    let item = data.product
-
-    console.log(cartId, item, quantity)
+    console.log(String(itemList.value[i].cartId), cartsId)
+    if (cartsId.includes(String(itemList.value[i].cartId))) {
+      paymentBody.value.push({
+        cartId: itemList.value[i].cartId,
+        quantity: quantity.value[i],
+        product: itemList.value[i].product,
+        coupon: null
+      })
+    }
   }
-  alert('선택 상품 주문')
+
+  Cookies.set('carts', JSON.stringify(paymentBody.value), {
+    expires: 1
+  })
+  router.push({ name: 'payment' })
 }
 
 const allOrder = () => {
