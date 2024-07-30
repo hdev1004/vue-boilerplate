@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import AxiosInstance from '@/axios/axiosInstance'
 import { success, error } from '@/utils/vueAlert'
+import { useRouter } from 'vue-router'
 import Cookies from 'js-cookie'
 
 const isNone = ref(false)
@@ -97,7 +98,20 @@ const clickCart = async () => {
 }
 
 const clickPayment = async () => {
-  router.push('/payment')
+  Cookies.set(
+    'carts',
+    JSON.stringify([
+      {
+        productId: route.query.id,
+        quantity: quantity.value,
+        carts: null
+      }
+    ]),
+    {
+      expires: 1
+    }
+  )
+  router.push({ name: 'payment' })
 }
 
 const loading = async () => {

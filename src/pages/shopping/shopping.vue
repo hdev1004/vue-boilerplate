@@ -78,7 +78,7 @@ const entireItemClick = () => {
     items.value = {}
   } else {
     itemList.value.forEach((element) => {
-      items.value[element.cartId] = true
+      items.value[element.cartId] = element
     })
   }
 }
@@ -128,6 +128,16 @@ const selectDelete = async () => {
 }
 
 const selectOrder = () => {
+  let cartsId = Object.keys(items.value)
+  for (let i = 0; i < itemList.value.length; i++) {
+    //여기서부터 수정
+    let data = items.value[cartsId[i]]
+    let cartId = cartsId[i]
+    let quan = quantity.value[i]
+    let item = data.product
+
+    console.log(cartId, item, quantity)
+  }
   alert('선택 상품 주문')
 }
 
@@ -135,11 +145,11 @@ const allOrder = () => {
   alert('전체 상품 주문')
 }
 
-const itemCheckbox = (item: string) => {
-  if (items.value[item]) {
-    delete items.value[item]
+const itemCheckbox = (cartId: string, item: any) => {
+  if (items.value[cartId]) {
+    delete items.value[cartId]
   } else {
-    items.value[item] = true
+    items.value[cartId] = item
   }
 }
 </script>
@@ -181,7 +191,7 @@ const itemCheckbox = (item: string) => {
           <a-checkbox
             class="item_checkbox"
             :checked="items[item.cartId]"
-            @change="itemCheckbox(item.cartId)"
+            @change="itemCheckbox(item.cartId, item)"
           ></a-checkbox>
         </div>
       </div>

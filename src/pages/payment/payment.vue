@@ -2,6 +2,7 @@
 import type { SelectProps } from 'ant-design-vue'
 
 const deliverUserInfo = ref('1')
+const route = useRoute()
 
 const options = ref<SelectProps['options']>([
   {

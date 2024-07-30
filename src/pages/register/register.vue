@@ -12,6 +12,16 @@ const loginId = ref('')
 const password = ref('')
 const rePassword = ref('')
 const memberName = ref('')
+
+const postCode = ref('') //우편번호
+const address = ref('')
+const address_detail = ref('')
+const phone1 = ref('010')
+const phone2 = ref('')
+const phone3 = ref('')
+const email_id = ref('')
+const email_domain = ref('')
+
 const errorType = ref('none')
 const type = ref('회원가입') //회원가입, 오류 2개의 타입
 const title = ref('회원가입을 진행하시겠습니까?')
@@ -47,6 +57,18 @@ const options = ref<SelectProps['options']>([
     label: '019'
   }
 ])
+
+const findAddress = () => {
+  new window.daum.Postcode({
+    oncomplete: function (data: any) {
+      console.log(data)
+      address.value = data.address
+      postCode.value = data.zonecode
+      // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분입니다.
+      // 예제를 참고하여 다양한 활용법을 확인해 보세요.
+    }
+  }).open()
+}
 
 const registerCheck = () => {
   if (isIdCheckClick.value === false) {
@@ -87,13 +109,14 @@ const registerCheck = () => {
   }
 
   if (memberName.value.trim() === '') {
-    errorType.value = '사용자이름'
+    errorType.value = '사용자이름확인'
     type.value = '오류'
     title.value = '사용자 이름을 입력해주세요.'
     sub.value = ''
     isError.value = true
     return
   }
+
   errorType.value = 'none'
 
   isModal.value = true
@@ -151,11 +174,35 @@ const register = async () => {
     return
   }
 
+  if (phone1.value.trim() === '' || phone2.value === '' || phone3.value === '') {
+    warning('전화번호를 확인해주세요.')
+    return
+  }
+
+  if (email_id.value.trim() === '' || email_domain.value.trim() === '') {
+    warning('이메일을 확인해주세요.')
+    return
+  }
+
+  if (
+    address.value.trim() === '' ||
+    address_detail.value.trim() === '' ||
+    postCode.value.trim() === ''
+  ) {
+    warning('배송지를 확인해주세요')
+    return
+  }
+
   try {
     data = await axiosInstance.post('/api/user-service/members', {
       loginId: loginId.value,
       password: password.value,
-      memberName: memberName.value
+      memberName: memberName.value,
+      phoneNumber: `${phone1.value}${phone2.value}${phone3.value}`,
+      email: `${email_id.value}@${email_domain.value}`,
+      postNumber: postCode.value,
+      address: address.value,
+      addressDetail: address_detail.value
     })
 
     success('회원가입이 완료되었습니다.')
@@ -173,6 +220,13 @@ const register = async () => {
 const close = () => {
   isModal.value = false
 }
+
+onMounted(() => {
+  const script = document.createElement('script') //script 변수 선언해서 <scrpit /> 얘를 만들어가지고 담는다
+  script.src = '//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js' //script의 src속성에 카카오에서 제공한 주소값을 넣어준다
+  document.head.appendChild(script) //head에 src 속성까지 만들어진 script소스를   append한다
+})
+
 //loginId, password, rePassword,memberName
 </script>
 
@@ -209,17 +263,22 @@ const close = () => {
           </div>
           <div class="payment_order_row">
             <div class="payment_order_row_title">휴대전화 *</div>
-            <a-select :options="options" class="payment_phone_select" size="large"></a-select>
+            <a-select
+              :options="options"
+              class="payment_phone_select"
+              size="large"
+              v-model:value="phone1"
+            ></a-select>
             <div class="div">-</div>
-            <input />
+            <input v-model="phone2" type="number" />
             <div class="div">-</div>
-            <input />
+            <input v-model="phone3" type="number" />
           </div>
           <div class="payment_order_row">
             <div class="payment_order_row_title">이메일</div>
-            <input />
+            <input v-model="email_id" />
             <div class="div">@</div>
-            <input />
+            <input v-model="email_domain" />
           </div>
         </div>
       </div>
@@ -234,11 +293,11 @@ const close = () => {
             <div class="payment_order_row_title">주소 *</div>
             <div class="payment_order_address">
               <div class="payment_order_addres_search">
-                <input placeholder="우편번호" />
-                <div>주소검색</div>
+                <input placeholder="우편번호" disabled v-model="postCode" />
+                <div @click="findAddress()">주소검색</div>
               </div>
-              <input placeholder="기본주소" />
-              <input placeholder="상세주소" />
+              <input placeholder="기본주소" disabled v-model="address" />
+              <input placeholder="상세주소" v-model="address_detail" />
             </div>
           </div>
         </div>

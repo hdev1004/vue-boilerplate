@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import AxiosInstance from '@/axios/axiosInstance'
 import { error, success, warning } from '@/utils/vueAlert'
+import type { SelectProps } from 'ant-design-vue'
 import Cookies from 'js-cookie'
 import { useRouter } from 'vue-router'
 
@@ -12,9 +13,88 @@ const password = ref('')
 const rePassword = ref('')
 const memberName = ref(memberInfo.memberName)
 const errorType = ref('none')
+const postCode = ref(memberInfo.postNumber)
+const address = ref(memberInfo.address)
+const address_detail = ref(memberInfo.addressDetail)
+const email_id = ref(memberInfo.email.split('@')[0])
+const email_domain = ref(memberInfo.email.split('@')[1])
+
+const phone = ref(memberInfo.phoneNumber)
+const phone1 = ref('')
+const phone2 = ref('')
+const phone3 = ref('')
+
 const menuType = ref('정보수정')
 
 const router = useRouter()
+
+console.log(memberInfo)
+
+splitPhoneNumber()
+const options = ref<SelectProps['options']>([
+  {
+    value: '010',
+    label: '010'
+  },
+  {
+    value: '011',
+    label: '011'
+  },
+  {
+    value: '016',
+    label: '016'
+  },
+  {
+    value: '017',
+    label: '017'
+  },
+  {
+    value: '018',
+    label: '018'
+  },
+  {
+    value: '019',
+    label: '019'
+  }
+])
+
+onMounted(() => {
+  const script = document.createElement('script') //script 변수 선언해서 <scrpit /> 얘를 만들어가지고 담는다
+  script.src = '//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js' //script의 src속성에 카카오에서 제공한 주소값을 넣어준다
+  document.head.appendChild(script) //head에 src 속성까지 만들어진 script소스를   append한다
+})
+
+//전화번호 나누기
+function splitPhoneNumber() {
+  let phoneNumber = phone.value
+  // 전화번호 정규 표현식
+  const phonePattern = /^(\d{2,3})-?(\d{3,4})-?(\d{4})$/
+  const match = phoneNumber.match(phonePattern)
+
+  if (match) {
+    // 배열의 첫 번째 요소는 전체 매칭된 문자열이므로 제외
+    const [, part1, part2, part3] = match
+    phone1.value = part1
+    phone2.value = part2
+    phone3.value = part3
+  } else {
+    error('올바른 전화번호가 아닙니다')
+    return
+  }
+}
+
+const findAddress = () => {
+  new window.daum.Postcode({
+    oncomplete: function (data: any) {
+      console.log(data)
+      address.value = data.address
+      postCode.value = data.zonecode
+      address_detail.value = ''
+      // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분입니다.
+      // 예제를 참고하여 다양한 활용법을 확인해 보세요.
+    }
+  }).open()
+}
 
 const withdraw = async () => {
   if (confirm('회원을 탈퇴하시겠습니까? 🥹')) {
@@ -45,12 +125,35 @@ const updateCheck = async () => {
     warning('이름을 확인해주세요')
     return
   }
+  if (phone1.value.trim() === '' || phone2.value === '' || phone3.value === '') {
+    warning('전화번호를 확인해주세요.')
+    return
+  }
+
+  if (email_id.value.trim() === '' || email_domain.value.trim() === '') {
+    warning('이메일을 확인해주세요.')
+    return
+  }
+
+  if (
+    address.value.trim() === '' ||
+    address_detail.value.trim() === '' ||
+    postCode.value.trim() === ''
+  ) {
+    warning('배송지를 확인해주세요')
+    return
+  }
 
   let memberId = memberInfo.memberId
   try {
     let data = await AxiosInstance.put(`/api/user-service/members/${memberId}`, {
       password: password.value,
-      memberName: memberName.value
+      memberName: memberName.value,
+      phoneNumber: `${phone1.value}${phone2.value}${phone3.value}`,
+      email: `${email_id.value}@${email_domain.value}`,
+      postNumber: postCode.value,
+      address: address.value,
+      addressDetail: address_detail.value
     })
     if (data === null) return
     success('회원 정보가 변경되었습니다.')
@@ -118,17 +221,22 @@ const updateCheck = async () => {
               </div>
               <div class="payment_order_row">
                 <div class="payment_order_row_title">휴대전화 *</div>
-                <a-select :options="options" class="payment_phone_select" size="large"></a-select>
+                <a-select
+                  :options="options"
+                  v-model:value="phone1"
+                  class="payment_phone_select"
+                  size="large"
+                ></a-select>
                 <div class="div">-</div>
-                <input />
+                <input type="number" v-model="phone2" />
                 <div class="div">-</div>
-                <input />
+                <input type="number" v-model="phone3" />
               </div>
               <div class="payment_order_row">
                 <div class="payment_order_row_title">이메일</div>
-                <input />
+                <input v-model="email_id" />
                 <div class="div">@</div>
-                <input />
+                <input v-model="email_domain" />
               </div>
             </div>
           </div>
@@ -143,11 +251,11 @@ const updateCheck = async () => {
                 <div class="payment_order_row_title">주소 *</div>
                 <div class="payment_order_address">
                   <div class="payment_order_addres_search">
-                    <input placeholder="우편번호" />
-                    <div>주소검색</div>
+                    <input placeholder="우편번호" v-model="postCode" disabled />
+                    <div @click="findAddress">주소검색</div>
                   </div>
-                  <input placeholder="기본주소" />
-                  <input placeholder="상세주소" />
+                  <input placeholder="기본주소" v-model="address" disabled />
+                  <input placeholder="상세주소" v-model="address_detail" />
                 </div>
               </div>
             </div>
