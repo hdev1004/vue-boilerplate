@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AxiosInstance from '@/axios/axiosInstance'
-import { error } from '@/utils/vueAlert'
+import { error, success } from '@/utils/vueAlert'
 import type { SelectProps } from 'ant-design-vue'
 import Cookies from 'js-cookie'
 
@@ -32,21 +32,21 @@ const delivery_phone = ref(memberInfo.phoneNumber)
 const delivery_phone1 = ref('010')
 const delivery_phone2 = ref('')
 const delivery_phone3 = ref('')
+const discount = ref(0)
 
 const wallet = ref(0)
+const router = useRouter()
 
 const load = () => {
   splitPhoneNumber()
   getWallet()
+  getDiscount()
 }
 
 delivery_name.value = name.value
 delivery_address.value = address.value
 delivery_addressDetail.value = addressDetail.value
 delivery_postCode.value = postCode.value
-delivery_phone1.value = phone1.value
-delivery_phone2.value = phone2.value
-delivery_phone3.value = phone3.value
 
 let tempCarts = Cookies.get('carts')
 if (tempCarts === undefined) {
@@ -58,6 +58,15 @@ if (tempCarts === undefined) {
   })
 
   console.log(carts.value)
+}
+
+const getDiscount = () => {
+  let sum = 0
+  carts.value.forEach((element) => {
+    sum += element.discount
+  })
+
+  discount.value = sum
 }
 
 function splitPhoneNumber() {
@@ -72,6 +81,9 @@ function splitPhoneNumber() {
     phone1.value = part1
     phone2.value = part2
     phone3.value = part3
+    delivery_phone1.value = part1
+    delivery_phone2.value = part2
+    delivery_phone3.value = part3
   } else {
     error('올바른 전화번호가 아닙니다')
     return
@@ -83,6 +95,7 @@ const getWallet = async () => {
     let data = await AxiosInstance.get('/api/order-service/wallet')
     if (data === null) return
     wallet.value = data.data.amount
+    console.log('잔액 : ', wallet.value)
   } catch (err: any) {
     console.log(err)
     error('오류가 발생했습니다.')
@@ -90,6 +103,7 @@ const getWallet = async () => {
 }
 
 const payment = async () => {
+  await getWallet()
   if (wallet.value < totalPrice.value) {
     //충전이 필요한 경우
     try {
@@ -97,35 +111,60 @@ const payment = async () => {
         amount: totalPrice.value - wallet.value
       })
       if (data === null) return
-
-      return
-      let pay = await AxiosInstance.post('/api/order-service/orders', {
-        senderName: delivery_name.value,
-        senderPhoneNumber: '0105213456',
-        senderEmail: 'woongd@dsakl',
-
-        receiverName: 'receiver',
-        receiverPhoneNumber: '0105634574341',
-
-        address: 'addr',
-        addressDetail: 'detail',
-
-        orderProducts: [
-          {
-            productId: '1',
-            quantity: '10',
-            memberCouponId: '1'
-          },
-          {
-            productId: '2',
-            quantity: '4'
-          }
-        ]
-      })
     } catch (err: any) {
       console.log(err)
       error('오류가 발생했습니다.')
+      return
     }
+  } else {
+    console.log('이미 돈 있음')
+  }
+
+  let params = []
+  for (let i = 0; i < carts.value.length; i++) {
+    let obj: any = {
+      productId: carts.value[i].product.productId,
+      quantity: carts.value[i].quantity
+    }
+    if (carts.value[i].coupon !== null) {
+      obj['memberCouponId'] = carts.value[i].coupon
+    }
+    params.push(obj)
+  }
+
+  //결제!!!!
+  try {
+    let pay = await AxiosInstance.post('/api/order-service/orders', {
+      senderName: name.value,
+      senderPhoneNumber: `${phone1.value}${phone2.value}${phone3.value}`,
+      senderEmail: emailId.value + '@' + emailDomain.value,
+
+      receiverName: delivery_name.value,
+      receiverPhoneNumber: `${delivery_phone1.value}${delivery_phone2.value}${delivery_phone3.value}`,
+
+      address: delivery_address.value,
+      addressDetail: delivery_addressDetail.value,
+
+      orderProducts: params
+    })
+    if (pay === null) return
+    success('결제가 완료되었습니다.')
+    router.push('/')
+
+    //장바구니 삭제
+    try {
+      for (let i = 0; i < carts.value.length; i++) {
+        if (carts.value[i].cartId === null) continue
+        let data = await AxiosInstance.delete(`/api/order-service/carts/${carts.value[i].cartId}`)
+        if (data === null) return
+      }
+    } catch (err2: any) {
+      console.log('err2 : ', err2)
+      error('장바구니 삭제 오류')
+    }
+  } catch (err: any) {
+    console.log(err)
+    error(err.response.data.message)
   }
   return
 }
@@ -290,16 +329,18 @@ onMounted(() => {
               <div class="payment_item_price">
                 {{ (cart.product.unitPrice * cart.quantity).toLocaleString() }} 원
               </div>
+              <!--
               <div class="payment_item_close">
                 <img src="@/assets/images/header/closeWhite.png" />
               </div>
+              -->
             </div>
           </div>
         </div>
       </div>
 
       <div class="payment_last" @click="payment">
-        <div>{{ totalPrice.toLocaleString() }} 원 결제하기</div>
+        <div>{{ (totalPrice - discount).toLocaleString() }} 원 결제하기</div>
       </div>
     </div>
   </section>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AxiosInstance from '@/axios/axiosInstance'
-import { error, success } from '@/utils/vueAlert'
+import { error, success, warning } from '@/utils/vueAlert'
 import type { SelectProps } from 'ant-design-vue'
 import Cookies from 'js-cookie'
 let itemList = ref<Array<any>>([])
@@ -9,14 +9,47 @@ let items = ref<{
 }>({})
 const sum = ref(0)
 const quantity = ref<Array<number>>([])
-const coupon = ref('')
 const paymentBody = ref<Array<any>>([])
 const router = useRouter()
-const couponList = ref<Array<any>>([])
-const useCoupon = ref<Array<any>>([])
+const couponList = ref<Array<any>>([]) //전체 쿠폰 리스트 목록
+const useCoupon = ref<Array<any>>([]) //각 항목마다 뭘 사용하고 있는지 확인하는 변수
+const prevCouponList = ref<Array<any>>([])
+const deductionPrice = ref<Array<any>>([]) //공제금액
 
-const handleChange = (value: string) => {
-  console.log(`selected ${value}`)
+const options = ref<any['options']>([])
+
+/**
+ *
+ * @param value 변경된 값
+ * @param index 변경된 상품의 인덱스
+ */
+const handleChange = (value: any, index: number) => {
+  let prev = prevCouponList.value[index] //이전 데이터
+  selecedCouponId(value, prev, index)
+  prevCouponList.value[index] = value
+  console.log(value, index)
+}
+
+const selecedCouponId = (couponId: number, prevCouponId: any, itemIdx: number) => {
+  for (let i = 0; i < options.value?.length; i++) {
+    if (couponId !== null && options.value[i].value === couponId) {
+      options.value[i].disabled = true
+      if (options.value[i].isPercent) {
+        console.log('공제 : ', options.value[i].discount + '%')
+        deductionPrice.value[itemIdx] =
+          itemList.value[itemIdx].product.unitPrice *
+          quantity.value[itemIdx] *
+          (options.value[i].discount / 100)
+      } else {
+        deductionPrice.value[itemIdx] = options.value[i].discount
+      }
+      console.log(deductionPrice.value)
+    }
+    if (prevCouponId !== null && options.value[i].value === prevCouponId) {
+      options.value[i].disabled = false
+    }
+  }
+  console.log(options.value)
 }
 
 const getCouponList = async () => {
@@ -24,7 +57,20 @@ const getCouponList = async () => {
     let data = await AxiosInstance.get('/api/order-service/members/coupon')
     if (data === null) return
     couponList.value = data.data.coupons
-    console.log(couponList.value)
+    options.value?.push({
+      label: '미사용',
+      value: null
+    })
+    for (let i = 0; i < couponList.value.length; i++) {
+      if (couponList.value[i].isUsed) continue
+      options.value?.push({
+        label: couponList.value[i].name,
+        value: couponList.value[i].couponId,
+        discount: couponList.value[i].discount,
+        isPercent: couponList.value[i].isPercent
+      })
+    }
+    console.log('COUPON LIST : ', options.value)
   } catch (err: any) {
     console.log(err)
     error('오류가 발생했습니다')
@@ -40,6 +86,8 @@ const getItemList = async () => {
     itemList.value.forEach((element) => {
       quantity.value.push(element.quantity)
       useCoupon.value.push(null)
+      prevCouponList.value.push(null)
+      deductionPrice.value.push(0)
     })
   } catch (err: any) {
     error('데이터를 불러오는 중 오류가 발생했습니다.')
@@ -47,31 +95,22 @@ const getItemList = async () => {
   }
 }
 
-getItemList()
-getCouponList()
-const options = ref<SelectProps['options']>([
-  {
-    value: '',
-    label: '쿠폰 리스트',
-    disabled: true
-  },
-  {
-    value: 'lucy',
-    label: 'Lucy'
-  },
-  {
-    value: 'disabled',
-    label: 'Disabled'
-  },
-  {
-    value: 'yiminghe',
-    label: 'Yiminghe'
-  }
-])
-
 const itemMiuse = (index: number) => {
   if (quantity.value[index] > 1) {
     quantity.value[index] -= 1
+    for (let i = 0; i < options.value.length; i++) {
+      if (useCoupon.value[index] !== null && options.value[i].value === useCoupon.value[index]) {
+        if (options.value[i].isPercent) {
+          deductionPrice.value[index] =
+            itemList.value[index].product.unitPrice *
+            quantity.value[index] *
+            (options.value[i].discount / 100)
+        } else {
+          deductionPrice.value[index] = options.value[i].discount
+        }
+      }
+    }
+    console.log('공제금 : ', deductionPrice.value)
 
     sum.value = 0
     itemList.value.forEach((element) => {
@@ -83,12 +122,35 @@ const itemMiuse = (index: number) => {
 const itemPlus = (index: number) => {
   if (quantity.value[index] < 101) {
     quantity.value[index] += 1
+    for (let i = 0; i < options.value.length; i++) {
+      if (useCoupon.value[index] !== null && options.value[i].value === useCoupon.value[index]) {
+        if (options.value[i].isPercent) {
+          deductionPrice.value[index] =
+            itemList.value[index].product.unitPrice *
+            quantity.value[index] *
+            (options.value[i].discount / 100)
+        } else {
+          deductionPrice.value[index] = options.value[i].discount
+        }
+      }
+    }
+    console.log('공제금 : ', deductionPrice.value)
 
     sum.value = 0
     itemList.value.forEach((element, idx) => {
       sum.value += element.product.unitPrice * quantity.value[idx]
     })
   }
+}
+
+const sumDeductionPrice = () => {
+  let sum = 0
+
+  deductionPrice.value.forEach((element) => {
+    sum += element
+  })
+
+  return sum
 }
 
 const entireItemClick = () => {
@@ -147,17 +209,23 @@ const selectDelete = async () => {
 
 const selectOrder = () => {
   let cartsId = Object.keys(items.value)
+  if (cartsId.length === 0) {
+    warning('상품을 선택해주세요')
+    return
+  }
   paymentBody.value = []
   for (let i = 0; i < itemList.value.length; i++) {
     //여기서부터 수정
     console.log(String(itemList.value[i].cartId), cartsId)
     if (cartsId.includes(String(itemList.value[i].cartId))) {
-      paymentBody.value.push({
+      let params = {
         cartId: itemList.value[i].cartId,
         quantity: quantity.value[i],
         product: itemList.value[i].product,
-        coupon: null
-      })
+        coupon: useCoupon.value[i],
+        discount: deductionPrice.value[i]
+      }
+      paymentBody.value.push(params)
     }
   }
 
@@ -178,12 +246,18 @@ const itemCheckbox = (cartId: string, item: any) => {
     items.value[cartId] = item
   }
 }
+
+getItemList()
+getCouponList()
 </script>
 
 <template>
   <section class="shopping_container">
     <div class="shopping_logo">장바구니</div>
     <div class="item_card_container">
+      <div v-if="itemList.length === 0">
+        <div>장바구니에 담긴 상품이 없습니다. 🛒</div>
+      </div>
       <div v-for="(item, index) in itemList" v-bind:key="item" class="item_card" :id="item">
         <div class="item_contents">
           <div class="item_images_container">
@@ -194,7 +268,9 @@ const itemCheckbox = (cartId: string, item: any) => {
           </div>
           <div class="item_des">
             <div class="item_title">{{ item.product.name }}</div>
-            <div class="item_price">{{ item.product.unitPrice.toLocaleString() }}원</div>
+            <div class="item_price">
+              {{ (item.product.unitPrice * quantity[index]).toLocaleString() }}원
+            </div>
             <div class="item_quantity">
               <div class="item_minus" @click="itemMiuse(index)">-</div>
               <div class="item_number">{{ quantity[index] }}</div>
@@ -204,10 +280,10 @@ const itemCheckbox = (cartId: string, item: any) => {
             <div class="item_coupon">
               <a-select
                 ref="select"
-                v-model:value="coupon"
+                v-model:value="useCoupon[index]"
                 style="width: 120px"
                 :options="options"
-                @change="handleChange"
+                @change="(e:any) => handleChange(e, index )"
               ></a-select>
             </div>
           </div>
@@ -229,8 +305,17 @@ const itemCheckbox = (cartId: string, item: any) => {
     </div>
 
     <div class="item_cashier">
-      <div>총 상품금액</div>
+      <div>상품금액</div>
       <div>{{ sum.toLocaleString() }}원</div>
+    </div>
+    <div class="item_cashier">
+      <div>할인금액</div>
+      <div>{{ sumDeductionPrice().toLocaleString() }}원</div>
+    </div>
+
+    <div class="item_cashier">
+      <div>결제금액</div>
+      <div>{{ (sum - sumDeductionPrice()).toLocaleString() }}원</div>
     </div>
 
     <div class="item_cashier_container">

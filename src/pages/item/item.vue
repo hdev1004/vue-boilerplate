@@ -104,7 +104,8 @@ const clickPayment = async () => {
       {
         product: item.value,
         quantity: quantity.value,
-        cartId: null
+        cartId: null,
+        discount: 0
       }
     ]),
     {

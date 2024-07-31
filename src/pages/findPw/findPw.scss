@@ -1,0 +1,16 @@
+.input_container {
+  display: flex !important;
+  flex-direction: row;
+
+  .sending_btn {
+    cursor: pointer;
+    width: 100px;
+    height: 40px;
+    background-color: #05153b;
+    color: white;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}

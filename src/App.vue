@@ -10,7 +10,19 @@ const loginCheckStore = useLoginCheckStore()
 
 const route = useRoute()
 const router = useRouter()
-const excludeURL = ['/', '/best', '/new', '/category', '/item', '/login', '/register', '/item']
+const excludeURL = [
+  '/',
+  '/best',
+  '/new',
+  '/category',
+  '/item',
+  '/login',
+  '/register',
+  '/item',
+  '/coupon',
+  '/findId',
+  '/findPw'
+]
 
 watch(
   () => route.fullPath,

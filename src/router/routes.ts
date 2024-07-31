@@ -1,6 +1,8 @@
 import bestRouter from './best/bestRouter.js'
 import categoryRouter from './category/categoryRouter.js'
 import couponRouter from './coupon/couponRouter.js'
+import findIdRouter from './findId/findIdRouter.js'
+import findPwRouter from './findPw/findPwRouter.js'
 import itemRouter from './item/itemRouter.js'
 import loginRouter from './login/loginRouter.js'
 import mypageRouter from './mypage/mypageRouter.js'
@@ -28,7 +30,9 @@ const CustomRouter = [
   ...wishlistRouter,
   ...searchRouter,
   ...couponRouter,
-  ...paymentRouter
+  ...paymentRouter,
+  ...findIdRouter,
+  ...findPwRouter
 ]
 
 export default CustomRouter

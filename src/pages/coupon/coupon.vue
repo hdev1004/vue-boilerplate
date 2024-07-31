@@ -4,9 +4,15 @@ import { error, success, warning } from '@/utils/vueAlert'
 
 const couponList = ref<Array<any>>([])
 
-const getCoupon = (item: any) => {
+const getCoupon = async (item: any) => {
   console.log(item)
-  success(`'${item.name}' 쿠폰을 받았습니다 🥳`)
+  try {
+    let data = await AxiosInstance.post(`/api/order-service/members/coupon/${item.couponId}`)
+    if (data === null) return
+    success(`'${item.name}' 쿠폰을 받았습니다 🥳`)
+  } catch (err: any) {
+    warning(err.response.data.message)
+  }
 }
 
 const getCouponList = async () => {

@@ -18,6 +18,8 @@ const address = ref(memberInfo.address)
 const address_detail = ref(memberInfo.addressDetail)
 const email_id = ref(memberInfo.email.split('@')[0])
 const email_domain = ref(memberInfo.email.split('@')[1])
+const myOrders = ref<Array<any>>([])
+const couponList = ref<Array<any>>([])
 
 const phone = ref(memberInfo.phoneNumber)
 const phone1 = ref('')
@@ -31,6 +33,20 @@ const router = useRouter()
 console.log(memberInfo)
 
 splitPhoneNumber()
+
+const getCouponList = async () => {
+  try {
+    let data = await AxiosInstance.get('/api/order-service/members/coupon')
+    if (data === null) return
+
+    couponList.value = data.data.coupons
+    console.log(data)
+  } catch (err: any) {
+    console.log(err)
+    error('오류가 발생했습니다')
+  }
+}
+
 const options = ref<SelectProps['options']>([
   {
     value: '010',
@@ -64,6 +80,21 @@ onMounted(() => {
   document.head.appendChild(script) //head에 src 속성까지 만들어진 script소스를   append한다
 })
 
+const getMyOrders = async () => {
+  try {
+    let data = await AxiosInstance.get('/api/order-service/members/orders')
+    if (data === null) return
+    console.log(data.data.orders)
+    myOrders.value = data.data.orders
+  } catch (err: any) {
+    console.log(err)
+    error('오류가 발생했습니다.')
+  }
+}
+
+getMyOrders()
+getCouponList()
+
 //전화번호 나누기
 function splitPhoneNumber() {
   let phoneNumber = phone.value
@@ -81,6 +112,15 @@ function splitPhoneNumber() {
     error('올바른 전화번호가 아닙니다')
     return
   }
+}
+
+function formatDateTime(dateTimeString: string) {
+  const dateTime = new Date(dateTimeString)
+
+  const formattedDate = dateTime.toISOString().split('T')[0]
+  const formattedTime = dateTime.toTimeString().split(' ')[0].substring(0, 5)
+
+  return `${formattedDate} ${formattedTime}`
 }
 
 const findAddress = () => {
@@ -154,6 +194,12 @@ const updateCheck = async () => {
       postNumber: postCode.value,
       address: address.value,
       addressDetail: address_detail.value
+    })
+
+    let userInfo = await AxiosInstance.get(`/api/user-service/members/${memberId}`)
+    userInfo = userInfo.data
+    Cookies.set('member', JSON.stringify(userInfo), {
+      expires: 1
     })
     if (data === null) return
     success('회원 정보가 변경되었습니다.')
@@ -263,6 +309,97 @@ const updateCheck = async () => {
         </div>
         <div class="register_btn" @click="updateCheck">수정하기</div>
         <div class="delete_btn" @click="withdraw">회원탈퇴</div>
+      </div>
+
+      <div class="register_table" v-if="menuType === '결제내역'">
+        <div class="order_empty" v-if="myOrders.length === 0">주문한 상품이 없습니다. 🛒</div>
+        <div
+          v-for="(item, index) in myOrders"
+          v-bind:key="`item${index}`"
+          class="order_big_container"
+        >
+          <div class="order_container">
+            <div class="order_username">배송자 : {{ item.senderName }}</div>
+            <div class="order_sub_container">
+              <div
+                class="order_sub_item"
+                v-for="(subItem, subIndex) in item.orderProducts"
+                v-bind:key="`subItem${subIndex}`"
+              >
+                <div class="order_sub_image">
+                  <img
+                    :src="`/api/product-service/products/images/${subItem.productDetailResponseDto.thumbnailImageId}`"
+                  />
+                </div>
+                <div class="order_column">
+                  <div>
+                    {{ subItem.productDetailResponseDto.name }}
+                  </div>
+                  <div>{{ formatDateTime(subItem.productDetailResponseDto.createdAt) }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="register_table" v-if="menuType === '쿠폰리스트'">
+        <div class="coupon_list_container">
+          <div class="coupon_title">사용 가능 쿠폰</div>
+          <div class="myCoupon_title">
+            <div>사진</div>
+            <div>쿠폰명</div>
+            <div>할인금액</div>
+          </div>
+          <div
+            v-if="couponList.filter((item) => item.isUsed === false).length === 0"
+            class="poss_coupon"
+          >
+            사용가능한 쿠폰이 없습니다.
+          </div>
+          <div
+            class="myCoupon"
+            v-for="(coupon, index) in couponList.filter((item) => item.isUsed === false)"
+            v-bind:key="`coupon${index}`"
+          >
+            <div class="coupon_image">
+              <img :src="`/api/order-service/coupon/images/${coupon.couponImageId}`" />
+            </div>
+            <div>
+              {{ coupon.name }}
+            </div>
+
+            <div>{{ coupon.discount.toLocaleString() }}{{ coupon.isPercent ? '%' : '원' }}</div>
+          </div>
+
+          <div class="coupon_line"></div>
+
+          <div class="coupon_title">사용한 쿠폰</div>
+          <div class="myCoupon_title">
+            <div>사진</div>
+            <div>쿠폰명</div>
+            <div>할인금액</div>
+          </div>
+          <div
+            v-if="couponList.filter((item) => item.isUsed === true).length === 0"
+            class="poss_coupon"
+          >
+            사용한 쿠폰이 없습니다.
+          </div>
+          <div
+            class="useCoupon"
+            v-for="(coupon, index) in couponList.filter((item) => item.isUsed === true)"
+            v-bind:key="`coupon${index}`"
+          >
+            <div class="coupon_image">
+              <img :src="`/api/order-service/coupon/images/${coupon.couponImageId}`" />
+            </div>
+            <div>
+              {{ coupon.name }}
+            </div>
+
+            <div>{{ coupon.discount.toLocaleString() }}{{ coupon.isPercent ? '%' : '원' }}</div>
+          </div>
+        </div>
       </div>
     </div>
   </section>

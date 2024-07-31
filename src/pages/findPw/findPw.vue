@@ -1,0 +1,164 @@
+<script setup lang="ts">
+import AxiosInstance from '@/axios/axiosInstance'
+import { error, success, warning } from '@/utils/vueAlert'
+import emailjs from 'emailjs-com'
+
+const router = useRouter()
+const email = ref('')
+const id = ref<any>('')
+const replacePw = ref<any>('')
+const replacePwRe = ref<any>('')
+const loading = ref(false)
+const isReplace = ref(false)
+const SERVICE = import.meta.env.VITE_API_SERVICE
+const TEMPLATE = import.meta.env.VITE_API_TEMPLATE
+const USER = import.meta.env.VITE_API_USER
+const isSending = ref(false) //인증메일 전송 여부
+const vertifyNumber = ref('')
+const timeout = ref<any>(null)
+const isExpire = ref(false)
+const otp = ref(0)
+
+function generateRandomSixDigitNumber() {
+  return Math.floor(100000 + Math.random() * 900000)
+}
+const findPwCheck = async () => {
+  if (isExpire.value) {
+    warning('인증번호가 만료되었습니다.')
+    return
+  }
+  console.log(vertifyNumber.value, otp.value)
+  if (parseInt(vertifyNumber.value) !== otp.value) {
+    warning('인증번호가 같지 않습니다')
+    return
+  }
+
+  try {
+    let data = await AxiosInstance.get(`/api/user-service/members/loginId?email=${email.value}`)
+    if (data === null) return
+    let res = data.data.loginId
+
+    if (res !== id.value) {
+      warning('아이디가 같지 않습니다.')
+      return
+    }
+    isReplace.value = true
+    success('비밀번호를 재설정 해주세요')
+    console.log(res)
+  } catch (err: any) {
+    console.log(err)
+    error('오류가 발생했습니다.')
+    return
+  }
+}
+
+const replacePasswordFunction = async () => {
+  if (replacePw.value.trim() !== '' && replacePw.value !== replacePwRe.value) {
+    warning('비밀번호가 일치하지 않습니다.')
+    return
+  }
+
+  try {
+    let data = await AxiosInstance.patch('/api/user-service/members/password', {
+      loginId: id.value,
+      password: replacePw.value
+    })
+    if (data === null) return
+    success('비밀번호가 변경되었습니다.')
+    router.push('/')
+  } catch (err: any) {
+    console.log(err)
+    error('오류가 발생했습니다')
+  }
+}
+
+const sendEmail = async () => {
+  if (email.value.trim() === '') return
+
+  if (timeout.value !== null) {
+    //기존에 진행한게 있다면 취소
+    clearTimeout(timeout.value)
+  }
+  //3분
+  timeout.value = setTimeout(() => {
+    isExpire.value = true
+  }, 180000)
+  otp.value = generateRandomSixDigitNumber()
+
+  try {
+    const templateParams = {
+      number: otp.value,
+      to_email: email.value,
+      to_name: '글루따띠온 관리자'
+    }
+
+    await emailjs.send(
+      SERVICE, // EmailJS에서 제공하는 서비스 ID
+      TEMPLATE, // EmailJS에서 제공하는 템플릿 ID
+      templateParams,
+      USER
+    )
+
+    isExpire.value = false
+    isSending.value = true
+    console.log('sending')
+    success('이메일이 전송되었습니다.')
+    warning('인증번호 유효시간은 3분 입니다.')
+  } catch (error: any) {
+    console.log('err', error)
+  }
+}
+</script>
+
+<template>
+  <a-spin :spinning="loading">
+    <section class="login_container">
+      <div class="login_title_container">
+        <div class="logo">글루따띠온</div>
+        <div class="sub">비밀번호 찾기</div>
+        <div class="sub">
+          {{ isReplace ? '비밀번호를 재설정해주세요' : '아이디와 이메일을 입력해주세요' }}
+        </div>
+      </div>
+
+      <div class="login_line"></div>
+
+      <div class="input_container" v-if="!isReplace">
+        <input placeholder="아이디" v-model="id" />
+      </div>
+      <div style="margin-top: 10px"></div>
+      <div class="input_container" v-if="!isReplace">
+        <input placeholder="이메일" v-model="email" />
+        <div class="sending_btn" @click="sendEmail">전송하기</div>
+      </div>
+
+      <div style="margin-top: 10px"></div>
+      <div class="input_container" v-if="isSending && !isReplace">
+        <input placeholder="인증번호" v-model="vertifyNumber" />
+      </div>
+
+      <div style="margin-top: 10px" v-if="isReplace"></div>
+      <div class="input_container" v-if="isReplace">
+        <input placeholder="비밀번호 재설정" v-model="replacePw" type="password" />
+      </div>
+      <div style="margin-top: 10px" v-if="isReplace"></div>
+
+      <div class="input_container" v-if="isReplace">
+        <input placeholder="비밀번호 확인" v-model="replacePwRe" type="password" />
+      </div>
+
+      <div class="login_btn" @click="findPwCheck" v-if="!isReplace">비밀번호 찾기</div>
+      <div class="login_btn" @click="replacePasswordFunction" v-if="isReplace">비밀번호 재설정</div>
+      <div class="button_container">
+        <div class="btn_txt" @click="$router.push('/findId')">아이디 찾기</div>
+        <div class="btn_line"></div>
+        <div class="btn_txt" @click="$router.push('/register')">회원가입</div>
+      </div>
+    </section></a-spin
+  >
+</template>
+
+<style lang="scss" scoped>
+@import url('../login/login.scss');
+@import url('./findPw.scss');
+</style>

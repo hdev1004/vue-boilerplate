@@ -29,8 +29,6 @@ const sub = ref('회원정보는 가입 후 변경할 수 있습니다.')
 const router = useRouter()
 const isError = ref(false)
 
-warning('회원가입 기능 변경 중 입니다.')
-warning('테스트 계정으로 로그인 부탁드립니다 .🥹')
 const options = ref<SelectProps['options']>([
   {
     value: '010',
@@ -141,7 +139,7 @@ const idDupCheck = async () => {
   }
 
   try {
-    let data = await AxiosInstance.get(`/api/user-service/members/loginId?loginId=${id}`)
+    let data = await AxiosInstance.get(`/api/user-service/members/loginId/duplicate?loginId=${id}`)
     isIdDup.value = data.data.duplicate
 
     if (isIdDup.value) {

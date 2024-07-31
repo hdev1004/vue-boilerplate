@@ -19,6 +19,14 @@ const keyInput = (event: any) => {
   }
 }
 
+const findId = () => {
+  router.push('/findId')
+}
+
+const findPw = () => {
+  router.push('/findPw')
+}
+
 const decodeToken = (token: string) => {
   let decodeToken = null
 
@@ -93,15 +101,15 @@ const login = async () => {
 
     <div class="login_btn" @click="login">로그인</div>
     <div class="button_container">
-      <div class="btn_txt">아이디 찾기</div>
+      <div class="btn_txt" @click="findId">아이디 찾기</div>
       <div class="btn_line"></div>
-      <div class="btn_txt">비밀번호 찾기</div>
+      <div class="btn_txt" @click="findPw">비밀번호 찾기</div>
       <div class="btn_line"></div>
       <div class="btn_txt" @click="router.push('/register')">회원가입</div>
     </div>
   </section>
 </template>
 
-<style>
+<style scoped>
 @import url('./login.scss');
 </style>

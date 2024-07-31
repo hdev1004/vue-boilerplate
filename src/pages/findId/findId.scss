@@ -1,0 +1,29 @@
+.find_id {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 10px;
+  font-weight: 500;
+  font-size: 16px;
+
+  & > div:nth-child(2) {
+    font-size: 15px;
+  }
+}
+
+.input_container {
+  display: flex !important;
+  flex-direction: row;
+
+  .sending_btn {
+    cursor: pointer;
+    width: 100px;
+    height: 40px;
+    background-color: #05153b;
+    color: white;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}

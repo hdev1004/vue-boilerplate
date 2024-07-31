@@ -37,6 +37,7 @@ const logout = () => {
     window.localStorage.removeItem('memberToken')
     Cookies.remove('member')
     router.push('/')
+    loginCheckStore.isLogin = false
     isMobileMenuOpen.value = false
   }
 }
