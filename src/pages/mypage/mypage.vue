@@ -335,7 +335,19 @@ const updateCheck = async () => {
                   <div>
                     {{ subItem.productDetailResponseDto.name }}
                   </div>
-                  <div>{{ formatDateTime(subItem.productDetailResponseDto.createdAt) }}</div>
+                  <div>
+                    결제금액 :
+                    {{
+                      (
+                        subItem.productDetailResponseDto.unitPrice * subItem.quantity
+                      ).toLocaleString()
+                    }}원
+                  </div>
+
+                  <div v-if="subItem.couponResponseDto">
+                    사용한 쿠폰 :
+                    {{ subItem.couponResponseDto.name }}
+                  </div>
                 </div>
               </div>
             </div>
