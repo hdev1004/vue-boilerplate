@@ -236,7 +236,22 @@ const selectOrder = () => {
 }
 
 const allOrder = () => {
-  alert('전체 상품 주문')
+  paymentBody.value = []
+  for (let i = 0; i < itemList.value.length; i++) {
+    let params = {
+      cartId: itemList.value[i].cartId,
+      quantity: quantity.value[i],
+      product: itemList.value[i].product,
+      coupon: useCoupon.value[i],
+      discount: deductionPrice.value[i]
+    }
+    paymentBody.value.push(params)
+  }
+
+  Cookies.set('carts', JSON.stringify(paymentBody.value), {
+    expires: 1
+  })
+  router.push({ name: 'payment' })
 }
 
 const itemCheckbox = (cartId: string, item: any) => {

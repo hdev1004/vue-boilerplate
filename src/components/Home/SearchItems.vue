@@ -78,6 +78,7 @@ getItemList()
     <section class="homeitems_container">
       <div class="homeitems_logo">{{ props.title }}</div>
       <div class="homeitems_items">
+        <div v-if="itemList.length === 0">일치하는 상품이 없습니다. 🥹</div>
         <div v-for="(item, index) in itemList" :key="`item${index}`">
           <div class="homeitems_card">
             <img

@@ -10,6 +10,7 @@ const carts = ref<Array<any>>([])
 const totalPrice = ref(0)
 const memberString = Cookies.get('member')
 const memberInfo = memberString ? JSON.parse(memberString) : {}
+const useCoupon = ref<Array<any>>([])
 
 console.log(memberInfo)
 
@@ -33,14 +34,106 @@ const delivery_phone1 = ref('010')
 const delivery_phone2 = ref('')
 const delivery_phone3 = ref('')
 const discount = ref(0)
+const prevCouponList = ref<Array<any>>([])
+const deductionPrice = ref<Array<any>>([]) //공제금액
+const quantity = ref<Array<number>>([])
+
+//쿠폰 관련
+const couponList = ref<Array<any>>([])
+const coupon_options = ref<Array<any>>([])
 
 const wallet = ref(0)
 const router = useRouter()
 
-const load = () => {
+const load = async () => {
+  //쿠키에서 장바구니 정보 받기
+  let tempCarts = Cookies.get('carts')
+  if (tempCarts === undefined) {
+    alert('정상적이지 않은 접근입니다.')
+  } else {
+    carts.value = JSON.parse(tempCarts)
+    carts.value.map((item) => {
+      totalPrice.value += item.product.unitPrice * item.quantity
+      useCoupon.value.push(item.coupon)
+      quantity.value.push(item.quantity)
+      prevCouponList.value.push(item.coupon)
+    })
+
+    console.log('CARTS : ', carts.value)
+  }
+
   splitPhoneNumber()
   getWallet()
   getDiscount()
+  getCouponList()
+}
+
+const getCouponList = async () => {
+  try {
+    let data = await AxiosInstance.get('/api/order-service/members/coupon')
+    if (data === null) return
+    couponList.value = data.data.coupons
+    coupon_options.value.push({
+      label: '미사용',
+      value: null
+    })
+    for (let i = 0; i < couponList.value.length; i++) {
+      if (couponList.value[i].isUsed) continue
+      let param = {
+        label: couponList.value[i].name,
+        value: couponList.value[i].couponId,
+        discount: couponList.value[i].discount,
+        isPercent: couponList.value[i].isPercent,
+        disabled: false
+      }
+
+      if (useCoupon.value.includes(couponList.value[i].couponId)) {
+        param['disabled'] = true
+      }
+
+      coupon_options.value.push(param)
+    }
+    console.log('COUPON LIST : ', coupon_options.value)
+  } catch (err: any) {
+    console.log(err)
+    error('오류가 발생했습니다')
+  }
+}
+const sumDeductionPrice = () => {
+  let sum = 0
+
+  deductionPrice.value.forEach((element) => {
+    sum += element
+  })
+
+  return sum
+}
+const handleChange = (value: any, index: number) => {
+  let prev = prevCouponList.value[index] //이전 데이터
+  selecedCouponId(value, prev, index)
+  prevCouponList.value[index] = value
+  console.log(value, index)
+}
+
+const selecedCouponId = (couponId: number, prevCouponId: any, itemIdx: number) => {
+  for (let i = 0; i < coupon_options.value?.length; i++) {
+    if (couponId !== null && coupon_options.value[i].value === couponId) {
+      coupon_options.value[i].disabled = true
+      if (coupon_options.value[i].isPercent) {
+        console.log('공제 : ', coupon_options.value[i].discount + '%')
+        deductionPrice.value[itemIdx] =
+          carts.value[itemIdx].product.unitPrice *
+          quantity.value[itemIdx] *
+          (coupon_options.value[i].discount / 100)
+      } else {
+        deductionPrice.value[itemIdx] = coupon_options.value[i].discount
+      }
+      console.log(deductionPrice.value)
+    }
+    if (prevCouponId !== null && coupon_options.value[i].value === prevCouponId) {
+      coupon_options.value[i].disabled = false
+    }
+  }
 }
 
 delivery_name.value = name.value
@@ -48,27 +141,13 @@ delivery_address.value = address.value
 delivery_addressDetail.value = addressDetail.value
 delivery_postCode.value = postCode.value
 
-let tempCarts = Cookies.get('carts')
-if (tempCarts === undefined) {
-  alert('정상적이지 않은 접근입니다.')
-} else {
-  carts.value = JSON.parse(tempCarts)
-  carts.value.map((item) => {
-    totalPrice.value += item.product.unitPrice * item.quantity
-  })
-
-  console.log(carts.value)
-}
-
 const getDiscount = () => {
-  let sum = 0
-  carts.value.forEach((element) => {
-    sum += element.discount
+  carts.value.forEach((element, index) => {
+    deductionPrice.value[index] = element.discount
   })
-
-  discount.value = sum
 }
 
+//전화번호 나누기 010 - 2211- 3333
 function splitPhoneNumber() {
   let phoneNumber = phone.value
   // 전화번호 정규 표현식
@@ -89,7 +168,7 @@ function splitPhoneNumber() {
     return
   }
 }
-
+//현재 지갑 받아오기
 const getWallet = async () => {
   try {
     let data = await AxiosInstance.get('/api/order-service/wallet')
@@ -102,7 +181,12 @@ const getWallet = async () => {
   }
 }
 
+//결제 함수
 const payment = async () => {
+  if (!window.confirm('결제하시겠습니까?')) {
+    return
+  }
+
   await getWallet()
   if (wallet.value < totalPrice.value) {
     //충전이 필요한 경우
@@ -126,8 +210,8 @@ const payment = async () => {
       productId: carts.value[i].product.productId,
       quantity: carts.value[i].quantity
     }
-    if (carts.value[i].coupon !== null) {
-      obj['memberCouponId'] = carts.value[i].coupon
+    if (useCoupon.value[i] !== null) {
+      obj['memberCouponId'] = useCoupon.value[i]
     }
     params.push(obj)
   }
@@ -329,6 +413,12 @@ onMounted(() => {
               <div class="payment_item_price">
                 {{ (cart.product.unitPrice * cart.quantity).toLocaleString() }} 원
               </div>
+              <a-select
+                class="payment_coupon"
+                :options="coupon_options"
+                v-model:value="useCoupon[index]"
+                @change="(e:any) => handleChange(e, index )"
+              ></a-select>
               <!--
               <div class="payment_item_close">
                 <img src="@/assets/images/header/closeWhite.png" />
@@ -340,7 +430,7 @@ onMounted(() => {
       </div>
 
       <div class="payment_last" @click="payment">
-        <div>{{ (totalPrice - discount).toLocaleString() }} 원 결제하기</div>
+        <div>{{ (totalPrice - sumDeductionPrice()).toLocaleString() }} 원 결제하기</div>
       </div>
     </div>
   </section>

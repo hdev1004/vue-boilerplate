@@ -5,6 +5,7 @@ import { error } from '@/utils/vueAlert'
 const router = useRouter()
 const route = useRoute()
 
+const isDataLoading = ref(false) //추가 데이터 로딩 여부
 const props = defineProps({
   /**Modal 여부 */
   //tab : 'best', 'new', 'category'
@@ -12,9 +13,13 @@ const props = defineProps({
   tab: String,
   infinity: Boolean
 })
+
+const isEnd = ref(false)
+const currentPage = ref(2)
 const styles = ref<Array<any>>([])
 const loading = ref(false)
-const stylesSelect = ref(0)
+const stylesSelect = ref(route.query.style)
+console.log('PATH : ', route.query)
 
 watch(
   () => route.query.style,
@@ -36,8 +41,8 @@ let itemList = ref<
   }>
 >([])
 
-const categoryChange = (index: number) => {
-  stylesSelect.value = index
+const categoryChange = (value: string, index: number) => {
+  stylesSelect.value = value
   router.push(`/category?style=${styles.value[index].style}`)
 }
 
@@ -58,18 +63,27 @@ const getItemList = async () => {
     //데이터 리스트 받기
     let data = null
     if (props.tab === 'best') {
-      data = await AxiosInstance.get('/api/product-service/products/search?page=1&size=8')
+      data = await AxiosInstance.get('/api/product-service/products/orders/top')
+      let prodcuts = []
+      for (let i = 0; i < data.data.products.length; i++) {
+        prodcuts.push(data.data.products[i].product)
+      }
+
+      itemList.value = prodcuts
     } else if (props.tab === 'new') {
       data = await AxiosInstance.get(
         '/api/product-service/products/search?page=1&size=8&sortElement=createdAt'
       )
+
+      itemList.value = data.data?.contents
     } else if (props.tab === 'category') {
       data = await AxiosInstance.get(
         `/api/product-service/products/search?page=1&size=8&style=${style}`
       )
+
+      itemList.value = data.data?.contents
     }
     if (data === null) return
-    itemList.value = data.data?.contents
     loading.value = false
 
     console.log(itemList.value)
@@ -96,7 +110,41 @@ const clickHeart = async (productId: number, isFavor: Boolean) => {
   }
 }
 
+const addItemList = async () => {
+  let data = null
+  if (isEnd.value) return
+  isDataLoading.value = true
+  try {
+    if (props.tab === 'new') {
+      data = await AxiosInstance.get(
+        `/api/product-service/products/search?page=${currentPage.value}&size=8&sortElement=createdAt`
+      )
+      itemList.value.push(...data.data.contents)
+
+      if (data.data.contents.length > 0) currentPage.value += 1
+      else isEnd.value = true
+    } else if (props.tab === 'category') {
+      data = await AxiosInstance.get(
+        `/api/product-service/products/search?page=${currentPage.value}&size=8&style=1`
+      )
+      itemList.value.push(...data.data.contents)
+      if (data.data.contents.length > 0) currentPage.value += 1
+      else isEnd.value = true
+    }
+    isDataLoading.value = false
+  } catch (err: any) {
+    console.log('err : ', err)
+    error('오류가 발생했습니다.')
+  }
+}
+
 getItemList()
+//무한 스크롤
+window.addEventListener('scroll', () => {
+  if (window.innerHeight + window.scrollY >= document.body.offsetHeight && !isDataLoading.value) {
+    if (route.path !== '/') addItemList()
+  }
+})
 </script>
 
 <template>
@@ -109,9 +157,9 @@ getItemList()
           v-for="(item, index) in styles"
           v-bind:key="`item${index}`"
           :class="`homeitems_styles_item ${
-            stylesSelect === index ? 'homeitems_styles_item_select' : ''
+            stylesSelect === item.style ? 'homeitems_styles_item_select' : ''
           }`"
-          @click="categoryChange(index)"
+          @click="categoryChange(item.style, index)"
         >
           {{ item.style }}
         </div>
@@ -142,6 +190,7 @@ getItemList()
           </div>
         </div>
       </div>
+      <a-spin :spinning="isDataLoading" class="data_loading"></a-spin>
     </section>
   </a-spin>
 </template>
