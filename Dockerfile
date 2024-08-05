@@ -1,21 +1,29 @@
-# Node.js 이미지 사용
-FROM node:19.5
+# Step 1: Build the Vue.js application
+FROM node:19.5.0 as build-stage
 
-# 작업 디렉토리 설정
+# Set working directory
 WORKDIR /app
 
-# package.json과 package-lock.json 복사
+# Install dependencies
 COPY package*.json ./
-
-# 종속성 설치
 RUN npm install
 
-# 애플리케이션 소스 복사
+# Copy the source code
 COPY . .
 
+# Build the application
+RUN npm run build
 
-# Vite 서버의 기본 포트(8085) 공개
+# Step 2: Serve the application with Nginx
+FROM nginx:alpine as production-stage
+
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Copy the built files from the build stage
+COPY --from=build-stage /app/dist /usr/share/nginx/html
+
+# Expose port 7075
 EXPOSE 8090
 
-# Vite 개발 서버 실행
-CMD ["npm", "run", "dev"]
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"]
