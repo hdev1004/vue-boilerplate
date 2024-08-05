@@ -39,7 +39,7 @@
 
 
 ### 2. 아키텍처
-아키텍처 이미지 업로드 예정
+![아키텍처](https://github.com/user-attachments/assets/5ace4ed0-6245-41b2-9109-3ffd538196a5)
 
 <br/>
 
